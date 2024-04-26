@@ -1,5 +1,5 @@
 import { showConnect } from "@stacks/connect";
-
+import { NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent } from '@/components/ui/navigation-menu';
 import { userSession } from "../user-session";
 
 function authenticate() {
@@ -23,13 +23,26 @@ function disconnect() {
 const ConnectWallet = () => {
   if (userSession.isUserSignedIn()) {
     return (
-      <div>
-        <button className="Connect btn" onClick={disconnect}>
-          Disconnect Wallet
-        </button>
-        <p>mainnet: {userSession.loadUserData().profile.stxAddress.mainnet}</p>
-        <p>testnet: {userSession.loadUserData().profile.stxAddress.testnet}</p>
-      </div>
+      <>
+        <NavigationMenuItem>
+          <button className="Connect btn" onClick={disconnect}>
+            Disconnect Wallet
+          </button>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>
+            <div className="truncate max-w-24">
+              {userSession.loadUserData().profile.stxAddress.mainnet}
+            </div>
+          </NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul>
+              <li>mainnet: {userSession.loadUserData().profile.stxAddress.mainnet}</li>
+              <li>testnet: {userSession.loadUserData().profile.stxAddress.testnet}</li>
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      </>
     );
   }
 

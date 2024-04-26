@@ -16,9 +16,7 @@ export function Header() {
                         </NavigationMenuLink>
                     </Link>
                 </NavigationMenuItem>
-                <NavigationMenuItem>
-                    <ConnectWallet />
-                </NavigationMenuItem>
+                <ConnectWallet />
             </NavigationMenuList>
         </NavigationMenu>
     );
