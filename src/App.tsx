@@ -1,4 +1,5 @@
 import './App.css';
+import { Button } from './components/Button';
 import ContractCallVote from './components/ContractCallVote';
 import { Header } from './components/Header';
 
@@ -10,6 +11,12 @@ function App() {
 
       {/* ContractCallVote file: `./src/components/ContractCallVote.js` */}
       <ContractCallVote />
+
+      <div className='flex items-center justify-around py-10 mx-auto text-center' style={{maxWidth: '480px'}}>
+        <Button as="a" href="#">default</Button>
+        <Button as="a" href="#" variant='primary'>primary</Button>
+        <Button as="a" href="#" variant='secondary'>secondary</Button>
+      </div>
 
       <div>
         <a

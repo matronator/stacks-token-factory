@@ -63,6 +63,12 @@
       --border: 215 27.9% 16.9%;
       --input: 215 27.9% 16.9%;
       --ring: 216 12.2% 83.9%;
+
+      --btn-primary-from: 268 100% 50%;
+      --btn-primary-to: 43 100% 50;
+
+      --btn-secondary-from: 70 100% 50%;
+      --btn-secondary-to: 220 100% 50%;
     }
   }
 
@@ -72,10 +78,6 @@
     }
     body {
       @apply bg-background text-foreground;
-    }
-    .btn {
-      @apply px-4 py-2 rounded-md text-primary bg-primary-foreground border-transparent border;
-      background: linear-gradient(hsl(var(--primary-foreground)), hsl(var(--primary-foreground))) padding-box, linear-gradient(to top right, #7700ff, #ffb702) border-box;
     }
     p {
       @apply mb-4;
@@ -97,5 +99,77 @@
     }
     h6 {
       @apply text-sm font-bold mb-4;
+    }
+  }
+
+  @layer components {
+    .btn {
+      @apply px-4 py-2 rounded-md text-primary bg-primary-foreground hover:bg-slate-800 hover:text-secondary-foreground transition-all;
+    }
+    .btn.btn-primary {
+      border: none;
+      display: block;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(to top right, hsl(var(--btn-primary-from)), hsl(var(--btn-primary-to)));
+    }
+    .btn.btn-primary::before {
+      @apply bg-primary-foreground rounded-md absolute transition-all;
+      content: "";
+      left: 1px;
+      right: 1px;
+      top: 1px;
+      bottom: 1px;
+      z-index: -1;
+    }
+    .btn.btn-primary:hover::before {
+      @apply bg-slate-800;
+    }
+    .btn.btn-primary::after {
+      content: attr(data-text);
+      @apply transition-all;
+      font-size: 16px;
+      background: linear-gradient(to top right, hsl(var(--btn-primary-from)), hsl(var(--btn-primary-to)));
+      background-position: 0 0;
+      background-size: 100% 100%;
+      background-clip: text;
+      color: transparent;
+    }
+    .btn.btn-primary:hover::after {
+      background-position: 100% 0;
+      background-size: 250% 250%;
+    }
+    .btn.btn-secondary {
+      border: none;
+      display: block;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(to top right, hsl(var(--btn-secondary-from)), hsl(var(--btn-secondary-to)));
+    }
+    .btn.btn-secondary::before {
+      @apply bg-slate-950 rounded-md absolute transition-all;
+      content: "";
+      left: 1px;
+      right: 1px;
+      top: 1px;
+      bottom: 1px;
+      z-index: -1;
+    }
+    .btn.btn-secondary:hover::before {
+      @apply bg-slate-900;
+    }
+    .btn.btn-secondary::after {
+      content: attr(data-text);
+      @apply transition-all;
+      font-size: 16px;
+      background: linear-gradient(to top right, hsl(var(--btn-secondary-from)), hsl(var(--btn-secondary-to)));
+      background-position: 0 0;
+      background-size: 100% 100%;
+      background-clip: text;
+      color: transparent;
+    }
+    .btn.btn-secondary:hover::after {
+      background-position: 0 100%;
+      background-size: 250% 250%;
     }
   }

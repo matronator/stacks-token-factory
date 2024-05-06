@@ -7,7 +7,7 @@ import ConnectWallet from './ConnectWallet';
 
 export function Header() {
     return (
-        <NavigationMenu className='ml-auto flex flex-row justify-end'>
+        <NavigationMenu className='flex flex-row justify-end ml-auto'>
             <NavigationMenuList>
                 <NavigationMenuItem>
                     <Link href="/">

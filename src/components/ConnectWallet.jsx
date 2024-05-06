@@ -1,6 +1,9 @@
 import { showConnect } from "@stacks/connect";
 import { NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent } from '@/components/ui/navigation-menu';
+import { Badge } from '@/components/ui/badge';
 import { userSession } from "../user-session";
+import stxIcon from '../assets/STX.svg';
+import { Button } from './Button';
 
 function authenticate() {
   showConnect({
@@ -25,9 +28,9 @@ const ConnectWallet = () => {
     return (
       <>
         <NavigationMenuItem>
-          <button className="Connect btn" onClick={disconnect}>
+          <Button variant="primary" className="Connect" onClick={disconnect}>
             Disconnect Wallet
-          </button>
+          </Button>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
@@ -35,10 +38,13 @@ const ConnectWallet = () => {
               {userSession.loadUserData().profile.stxAddress.mainnet}
             </div>
           </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul>
-              <li>mainnet: {userSession.loadUserData().profile.stxAddress.mainnet}</li>
-              <li>testnet: {userSession.loadUserData().profile.stxAddress.testnet}</li>
+          <NavigationMenuContent className="p-4 w-max">
+            <div className="grid grid-cols-2 mb-4">
+              <div><img src={stxIcon} alt="STX" /></div>
+            </div>
+            <ul className="relative grid grid-cols-1 pr-0 w-max whitespace-nowrap">
+              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center">mainnet:</Badge><span className="col-span-6 pr-0 text-center">{userSession.loadUserData().profile.stxAddress.mainnet}</span></li>
+              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center" variant="secondary">testnet:</Badge><span className="col-span-6 pr-0 text-center">{userSession.loadUserData().profile.stxAddress.testnet}</span></li>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
