@@ -1,9 +1,11 @@
-import { showConnect } from "@stacks/connect";
-import { NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent } from '@/components/ui/navigation-menu';
 import { Badge } from '@/components/ui/badge';
-import { userSession } from "../user-session";
-import stxIcon from '../assets/STX.svg';
-import { Button } from './Button';
+import {
+    NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger
+} from '@/components/ui/navigation-menu';
+import { showConnect } from '@stacks/connect';
+import stxIcon from '../../assets/STX.svg';
+import { userSession } from '../../user-session';
+import { Button } from '../Button';
 
 function authenticate() {
   showConnect({
@@ -23,13 +25,18 @@ function disconnect() {
   userSession.signUserOut("/");
 }
 
-const ConnectWallet = () => {
+interface ConnectWalletProps {
+  connectText?: string;
+  disconnectText?: string;
+}
+
+const ConnectWallet = (props: ConnectWalletProps) => {
   if (userSession.isUserSignedIn()) {
     return (
       <>
         <NavigationMenuItem>
           <Button variant="primary" className="Connect" onClick={disconnect}>
-            Disconnect Wallet
+            {props.disconnectText ?? "Disconnect Wallet"}
           </Button>
         </NavigationMenuItem>
         <NavigationMenuItem>
@@ -53,9 +60,9 @@ const ConnectWallet = () => {
   }
 
   return (
-    <button className="Connect btn" onClick={authenticate}>
-      Connect Wallet
-    </button>
+    <Button className="Connect" variant="primary" onClick={authenticate}>
+      {props.connectText ?? "Connect Wallet"}
+    </Button>
   );
 };
 

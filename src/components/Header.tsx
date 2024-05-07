@@ -3,7 +3,7 @@ import {
     navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
 import { Link } from '@radix-ui/react-navigation-menu';
-import ConnectWallet from './ConnectWallet';
+import ConnectWallet from './ConnectWallet/ConnectWallet';
 
 export function Header() {
     return (
