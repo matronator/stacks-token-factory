@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <Header />
-      <h1>Stacks Token Factory</h1>
+      <h1 className='text-orange-500 shadow-sm display-5 stacks-text-shadow'>Stacks <strong className='font-black text-transparent bg-gradient-to-tr via-indigo-500 to-purple-500 from-purple-700 bg-clip-text no-text-shadow'>Token Factory</strong></h1>
 
       {/* ContractCallVote file: `./src/components/ContractCallVote.js` */}
       <ContractCallVote />
