@@ -60,12 +60,16 @@
       (ok true))
     (err u4)))
 
+<% if $mintable === true %>
+
 (define-public (mint (amount uint) (recipient principal))
   (begin
     (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_OWNER_ONLY)
     (ft-mint? clarity-coin amount recipient)
   )
 )
+
+<% endif %>
 
 ;; Mint this token to a few people when deployed
 (ft-mint? <% name|kebabCase %> u<% supply %> '<% userWallet %>)
