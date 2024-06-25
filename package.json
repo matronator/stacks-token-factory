@@ -14,6 +14,7 @@
     "c32check": "^2.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "immer": "^10.1.1",
     "localstorage-slim": "^2.7.1",
     "lucide-react": "^0.373.0",
     "monaco-editor": "^0.49.0",
@@ -26,6 +27,8 @@
     "react-middle-ellipsis": "^1.2.2",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "use-immer": "^0.10.0",
+    "valtio": "^1.13.2",
     "zod": "^3.23.6"
   },
   "devDependencies": {

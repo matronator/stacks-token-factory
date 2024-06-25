@@ -9,8 +9,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { getContractContent } from '@/lib/api';
+import { connectWalletToBackend, getContractContent } from '@/lib/api';
+import { store } from '@/lib/state';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Account, DeployStatus } from '../../types';
 import { userSession } from '../../user-session';
 import { Button } from '../Button';
 import ConnectWallet from '../ConnectWallet/ConnectWallet';
@@ -40,6 +42,7 @@ export function CreateContractForm() {
     const [ contractContent, setContractContent ] = useState<string>('');
 
     const [deployCost, setDeployCost] = useState(10);
+    const [ deployStatus, setDeployStatus ] = useState<DeployStatus>(DeployStatus.Pending);
 
     const watchMintable = form.watch('mintable');
     const watchBurnable = form.watch('burnable');
@@ -49,6 +52,28 @@ export function CreateContractForm() {
         setModalOpen(true);
         const contractCode = await getContractContent(values);
         setContractContent(contractCode);
+    }
+
+    async function deployContract() {
+        const userData = store.userData;
+
+        if (!userData) {
+            setDeployStatus(DeployStatus.Error);
+            return;
+        }
+
+        const account = {
+            idAddress: userData.identityAddress,
+            stxAddress: userData.profile.stxAddress.mainnet,
+            stxTestnetAddress: userData.profile.stxAddress.testnet,
+            btcAddress: userData.profile.btcAddress,
+        } as Account;
+
+        const status = await connectWalletToBackend(account);
+        if (status >= 400) {
+            setDeployStatus(DeployStatus.Error);
+            return;
+        }
     }
 
     if (!userSession.isUserSignedIn()) {
@@ -330,7 +355,7 @@ export function CreateContractForm() {
                             <Separator className='my-4' />
                             <div className='flex justify-between'>
                                 <Button onClick={() => setModalOpen(false)}>Cancel</Button>
-                                <Button onClick={() => setModalOpen(false)} variant='secondary'>Deploy Contract</Button>
+                                <Button onClick={() => deployContract()} variant='secondary'>Deploy Contract</Button>
                             </div>
                         </div>
                     </div>

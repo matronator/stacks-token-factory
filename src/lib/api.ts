@@ -1,7 +1,9 @@
 import ls from 'localstorage-slim';
 import { z } from 'zod';
+import { Account } from '@/types';
+import { formSchema } from '../components/CreateContractForm/formSchema';
 import { userSession } from '../user-session';
-import { formSchema } from './formSchema';
+import { camelCaseToSnakeCase } from './utils';
 
 export const API_URL = import.meta.env.VITE_API_URL;
 
@@ -38,4 +40,35 @@ export async function getContractContent(values: z.infer<typeof formSchema>): Pr
     ls.set('contractCode', data);
 
     return data;
+}
+
+export async function connectWalletToBackend(account: Account) {
+    const body = normalizeProperties(account);
+    const payload = JSON.stringify(body);
+
+    const res = await fetch(API_URL + '/connect', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: payload,
+    });
+
+    const status = await res.status;
+
+    return status;
+}
+
+export function normalizeProperties(obj: any): any {
+    if (Array.isArray(obj)) {
+        return obj.map(item => normalizeProperties(item));
+    } else if (obj !== null && typeof obj === 'object') {
+        return Object.keys(obj).reduce((acc, key) => {
+            const snakeCaseKey = camelCaseToSnakeCase(key);
+            acc[snakeCaseKey] = normalizeProperties(obj[key]);
+            return acc;
+        }, {} as any);
+    } else {
+        return obj;
+    }
 }

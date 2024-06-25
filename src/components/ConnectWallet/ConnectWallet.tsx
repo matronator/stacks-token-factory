@@ -1,7 +1,9 @@
+import ls from 'localstorage-slim';
 import { Badge } from '@/components/ui/badge';
 import {
     NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger
 } from '@/components/ui/navigation-menu';
+import { store } from '@/lib/state';
 import { showConnect } from '@stacks/connect';
 import stxIcon from '../../assets/STX.svg';
 import { userSession } from '../../user-session';
@@ -14,7 +16,14 @@ function authenticate() {
       icon: window.location.origin + "/logo512.png",
     },
     redirectTo: "/",
-    onFinish: () => {
+    onFinish: async () => {
+      const userData = userSession.loadUserData();
+      
+      store.userData = userData;
+      store.loggedIn = true;
+      
+      ls.set('userData', userData);
+      
       window.location.reload();
     },
     userSession,
@@ -22,6 +31,11 @@ function authenticate() {
 }
 
 function disconnect() {
+  store.loggedIn = false;
+  store.userData = undefined;
+  
+  ls.remove('userData');
+  
   userSession.signUserOut("/");
 }
 
