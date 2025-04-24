@@ -215,8 +215,18 @@
       text-shadow: none;
     }
     .title-blue-text {
-      color: #fff;
-      text-shadow: 0 0 30px rgba(22, 150, 255, 0.85), 0 0 8px rgba(80, 249, 255, 0.85);
+      /* color: #fffa; */
+      filter: drop-shadow(0 0 20px rgba(22, 150, 255, 0.85)) drop-shadow(0 0 8px rgba(80, 249, 255, 0.85));
+      background:
+      /* the shine layer */
+      linear-gradient(-45deg, #fff 40%,#00d9ff73,#fff 60%)
+      right/300% 100%,
+      /* the color layer*/
+      linear-gradient(45deg, #fff, #fff);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color:#000;
+      animation: shine 5s infinite;
     }
 
     @keyframes pulseText {
@@ -224,11 +234,11 @@
         text-shadow: 0 0 0 #fff0;
         filter: drop-shadow(0 0 20px #fff) drop-shadow(0 0 0 rgb(255, 210, 7, 0));
       }
-      20% {
+      40% {
         text-shadow: 0 0 0 #fff0;
         filter: drop-shadow(0 0 20px #fff) drop-shadow(0 0 0 rgb(255, 210, 7, 0));
       }
-      80% {
+      95% {
         text-shadow: 0 0 0 #fff;
         filter: drop-shadow(0 0 20px rgba(255, 143, 7, 0.85)) drop-shadow(0 0 12px rgba(255, 210, 7, 0.85));
       }
@@ -236,5 +246,9 @@
         text-shadow: 0 0 0 #fff;
         filter: drop-shadow(0 0 20px rgba(255, 143, 7, 0.85)) drop-shadow(0 0 12px rgba(255, 210, 7, 0.85));
       }
+    }
+
+    @keyframes shine {
+      to {background-position: left;}
     }
   }

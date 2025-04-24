@@ -55,7 +55,7 @@ const ConnectWallet = (props: ConnectWalletProps) => {
         <NavigationMenuItem>
           <NavigationMenuTrigger>
             <div className="truncate max-w-24">
-              {getLocalStorage()?.addresses[0]}
+              {store.userData?.addresses[0]}
             </div>
           </NavigationMenuTrigger>
           <NavigationMenuContent className="p-4 w-max">
@@ -63,8 +63,8 @@ const ConnectWallet = (props: ConnectWalletProps) => {
               <div><img src={stxIcon} alt="STX" /></div>
             </div>
             <ul className="relative grid grid-cols-1 pr-0 w-max whitespace-nowrap">
-              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center">mainnet:</Badge><span className="col-span-6 pr-0 text-center">{getLocalStorage()?.addresses[0]}</span></li>
-              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center" variant="secondary">testnet:</Badge><span className="col-span-6 pr-0 text-center">{getLocalStorage()?.addresses[0]}</span></li>
+              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center">mainnet:</Badge><span className="col-span-6 pr-0 text-center">{store.userData?.addresses[0]}</span></li>
+              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center" variant="secondary">testnet:</Badge><span className="col-span-6 pr-0 text-center">{store.userData?.addresses[0]}</span></li>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
