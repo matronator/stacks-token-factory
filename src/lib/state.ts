@@ -1,9 +1,8 @@
 import ls from 'localstorage-slim';
 import { proxy } from 'valtio';
-import { userSession } from '@/user-session';
-import { UserData } from '@stacks/connect';
+import { getUserData, isConnected, LocalStorageStore, UserData } from '@stacks/connect';
 
-export const store = proxy<{ loggedIn: boolean, userData?: UserData }>({
-    loggedIn: userSession.isUserSignedIn(),
-    userData: (ls.get('userData') as UserData) ?? userSession.isUserSignedIn() ? userSession.loadUserData() : undefined,
+export const store = proxy<{ loggedIn: boolean, userData?: LocalStorageStore }>({
+    loggedIn: isConnected(),
+    userData: (ls.get('userData') as UserData) ?? isConnected() ? getUserData() : undefined,
 });

@@ -1,19 +1,17 @@
-import { useConnect } from "@stacks/connect-react";
-import { StacksTestnet, StacksMainnet } from "@stacks/network";
+import { isConnected, useConnect } from "@stacks/connect-react";
+import { STACKS_TESTNET, STACKS_MAINNET } from "@stacks/network";
 import {
   AnchorMode,
   PostConditionMode,
   stringUtf8CV,
 } from "@stacks/transactions";
 
-import { userSession } from "../user-session";
-
 const ContractCallVote = () => {
   const { doContractCall } = useConnect();
 
   function vote(pick) {
     doContractCall({
-      network: new StacksMainnet(),
+      network: STACKS_MAINNET,
       anchorMode: AnchorMode.Any,
       contractAddress: "ST39MJ145BR6S8C315AG2BD61SJ16E208P1FDK3AK",
       contractName: "example-fruit-vote-contract",
@@ -36,7 +34,7 @@ const ContractCallVote = () => {
     });
   }
 
-  if (!userSession.isUserSignedIn()) {
+  if (isConnected()) {
     return null;
   }
 

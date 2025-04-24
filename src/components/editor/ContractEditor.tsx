@@ -39,6 +39,7 @@ function ContractEditor(props: ContractEditorProps) {
         value={props.contractBody}
         options={{
           readOnly: true,
+          contextmenu: false,
           fontLigatures: true,
           fontSize: 14,
           minimap: {

@@ -2,17 +2,19 @@ import ls from 'localstorage-slim';
 import { z } from 'zod';
 import { Account } from '@/types';
 import { formSchema } from '../components/CreateContractForm/formSchema';
-import { userSession } from '../user-session';
 import { camelCaseToSnakeCase } from './utils';
+import { getLocalStorage } from '@stacks/connect';
+import { store } from './state';
 
 export const API_URL = import.meta.env.VITE_API_URL;
 
 export async function getContractContent(values: z.infer<typeof formSchema>): Promise<string> {
     const body = {
+        // template: '',
         arguments: {
             name: values.tokenName.replace(/ /g, '-'),
             editableUri: true,
-            userWallet: userSession.loadUserData().profile.stxAddress.mainnet,
+            userWallet: getLocalStorage()?.addresses[0],
             ...values,
         }
     }

@@ -1,5 +1,4 @@
 import './App.css';
-import ContractCallVote from './components/ContractCallVote';
 import { CreateContractForm } from './components/CreateContractForm/CreateContractForm';
 import { Header } from './components/Header';
 
@@ -7,10 +6,7 @@ function App() {
   return (
     <>
       <Header />
-      <h1 className='text-orange-500 shadow-sm display-5 stacks-text-shadow'>Stacks <strong className='font-black text-transparent bg-gradient-to-tr via-indigo-500 to-purple-500 from-purple-700 bg-clip-text no-text-shadow'>Token Factory</strong></h1>
-
-      {/* ContractCallVote file: `./src/components/ContractCallVote.js` */}
-      <ContractCallVote />
+      <h1 className='display-5'><span className='text-transparent bg-gradient-to-tr from-yellow-400 to-orange-500 via-amber-400 bg-clip-text shadow-sm title-orange-text'>Stacks</span> <strong className='font-black text-white title-blue-text'>Token Factory</strong></h1>
 
       <div className='container max-w-xl'>
         <CreateContractForm />

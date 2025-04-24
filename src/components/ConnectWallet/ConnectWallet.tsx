@@ -4,39 +4,38 @@ import {
     NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger
 } from '@/components/ui/navigation-menu';
 import { store } from '@/lib/state';
-import { showConnect } from '@stacks/connect';
+import { connect, disconnect, getLocalStorage, isConnected } from '@stacks/connect';
 import stxIcon from '../../assets/STX.svg';
-import { userSession } from '../../user-session';
 import { Button } from '../Button';
 
 function authenticate() {
-  showConnect({
+  connect({
     appDetails: {
       name: "Stacks Token Factory",
       icon: window.location.origin + "/logo512.png",
     },
     redirectTo: "/",
     onFinish: async () => {
-      const userData = userSession.loadUserData();
-      
+      const userData = await getLocalStorage();
+
       store.userData = userData;
       store.loggedIn = true;
-      
+
       ls.set('userData', userData);
-      
+
       window.location.reload();
     },
-    userSession,
   });
 }
 
-function disconnect() {
+function disconnectWallet() {
   store.loggedIn = false;
   store.userData = undefined;
-  
+
   ls.remove('userData');
-  
-  userSession.signUserOut("/");
+
+  disconnect();
+  window.location.reload();
 }
 
 interface ConnectWalletProps {
@@ -45,18 +44,18 @@ interface ConnectWalletProps {
 }
 
 const ConnectWallet = (props: ConnectWalletProps) => {
-  if (userSession.isUserSignedIn()) {
+  if (isConnected()) {
     return (
       <>
         <NavigationMenuItem>
-          <Button variant="primary" className="Connect" onClick={disconnect}>
+          <Button variant="primary" className="Connect" onClick={disconnectWallet}>
             {props.disconnectText ?? "Disconnect Wallet"}
           </Button>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
             <div className="truncate max-w-24">
-              {userSession.loadUserData().profile.stxAddress.mainnet}
+              {getLocalStorage()?.addresses[0]}
             </div>
           </NavigationMenuTrigger>
           <NavigationMenuContent className="p-4 w-max">
@@ -64,8 +63,8 @@ const ConnectWallet = (props: ConnectWalletProps) => {
               <div><img src={stxIcon} alt="STX" /></div>
             </div>
             <ul className="relative grid grid-cols-1 pr-0 w-max whitespace-nowrap">
-              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center">mainnet:</Badge><span className="col-span-6 pr-0 text-center">{userSession.loadUserData().profile.stxAddress.mainnet}</span></li>
-              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center" variant="secondary">testnet:</Badge><span className="col-span-6 pr-0 text-center">{userSession.loadUserData().profile.stxAddress.testnet}</span></li>
+              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center">mainnet:</Badge><span className="col-span-6 pr-0 text-center">{getLocalStorage()?.addresses[0]}</span></li>
+              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center" variant="secondary">testnet:</Badge><span className="col-span-6 pr-0 text-center">{getLocalStorage()?.addresses[0]}</span></li>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

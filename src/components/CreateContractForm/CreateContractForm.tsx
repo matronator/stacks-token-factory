@@ -13,10 +13,10 @@ import { connectWalletToBackend, getContractContent } from '@/lib/api';
 import { store } from '@/lib/state';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Account, DeployStatus } from '../../types';
-import { userSession } from '../../user-session';
 import { Button } from '../Button';
 import ConnectWallet from '../ConnectWallet/ConnectWallet';
 import { formSchema } from './formSchema';
+import { isConnected } from '@stacks/connect';
 
 export function CreateContractForm() {
     const form = useForm<z.infer<typeof formSchema>>({
@@ -64,9 +64,9 @@ export function CreateContractForm() {
 
         const account = {
             idAddress: userData.identityAddress,
-            stxAddress: userData.profile.stxAddress.mainnet,
-            stxTestnetAddress: userData.profile.stxAddress.testnet,
-            btcAddress: userData.profile.btcAddress,
+            stxAddress: userData.addresses.stx[0].address,
+            stxTestnetAddress: userData.addresses.stx[0].address,
+            btcAddress: userData.adresses.btc[0].address,
         } as Account;
 
         const status = await connectWalletToBackend(account);
@@ -76,7 +76,7 @@ export function CreateContractForm() {
         }
     }
 
-    if (!userSession.isUserSignedIn()) {
+    if (!isConnected()) {
         return (
             <div className='flex flex-col items-center justify-center my-8'>
                 <p className='text-base italic font-thin text-transparent max-w-fit bg-clip-text bg-gradient-to-br from-orange-400 via-yellow-300 to-red-500'>You must connect your Stacks wallet to start creating new tokens.</p>
