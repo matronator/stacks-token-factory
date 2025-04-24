@@ -10,11 +10,9 @@ export function Header() {
         <NavigationMenu className='flex flex-row justify-end ml-auto'>
             <NavigationMenuList>
                 <NavigationMenuItem>
-                    <Link href="/">
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Create Token
-                        </NavigationMenuLink>
-                    </Link>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()} href='/'>
+                        Create Token
+                    </NavigationMenuLink>
                 </NavigationMenuItem>
                 <ConnectWallet />
             </NavigationMenuList>
