@@ -15,6 +15,12 @@ export const formSchema = z.object({
     burnAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
     allowBurnToAll: z.boolean().optional(),
 }).superRefine((data, ctx) => {
+    if (data.tokenSupply === 0) {
+        if (!data.mintable) {
+            ctx.addIssue({ path: ['tokenSupply'], message: 'You must specify a total supply greater than 0 if your token is not mintable.' } as IssueData);
+        }
+    }
+
     if (data.mintable) {
         if (!data.mintAmount) {
             ctx.addIssue({ path: ['mintAmount'], message: 'You must specify the amount to mint when your token is mintable.' } as IssueData);

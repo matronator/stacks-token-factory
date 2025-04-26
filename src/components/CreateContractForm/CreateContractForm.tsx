@@ -63,10 +63,10 @@ export function CreateContractForm() {
         }
 
         const account = {
-            idAddress: userData.identityAddress,
+            idAddress: userData.addresses.stx[0].address,
             stxAddress: userData.addresses.stx[0].address,
             stxTestnetAddress: userData.addresses.stx[0].address,
-            btcAddress: userData.adresses.btc[0].address,
+            btcAddress: userData.addresses.btc[0].address,
         } as Account;
 
         const status = await connectWalletToBackend(account);
@@ -86,7 +86,7 @@ export function CreateContractForm() {
     }
 
     return (
-        <Card>
+        <Card className='backlight'>
             <CardHeader>
                 <CardTitle>Create new token</CardTitle>
             </CardHeader>
@@ -311,7 +311,7 @@ export function CreateContractForm() {
                     </form>
                 </Form>
                 {modalOpen && (
-                    <div className='fixed inset-0 z-50 flex items-center justify-center p-8 bg-black bg-opacity-75'>
+                    <div className='fixed inset-0 z-50 flex items-center justify-center p-8 bg-black bg-opacity-75' onClick={(e) => {if (e.target === e.currentTarget) setModalOpen(false)}}>
                         <div className='max-h-full p-8 overflow-y-auto rounded-lg shadow-lg bg-background'>
                             <h2 className='text-2xl font-bold text-center'>Contract Preview</h2>
                             <p className='text-lg font-thin text-center'>This is a preview of the contract you are about to deploy. Please review the details below.</p>

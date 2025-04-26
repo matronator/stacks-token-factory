@@ -27,9 +27,6 @@
                 "./src/*"
             ]
         },
-        "types": [
-            "./src/user-session.d.ts"
-        ]
     },
     "include": [
         "src"

@@ -41,6 +41,9 @@ importers:
       '@stacks/connect':
         specifier: ^8.0.0
         version: 8.1.9
+      '@stacks/connect-react':
+        specifier: ^23.0.12
+        version: 23.0.12(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@stacks/network':
         specifier: ^7.0.2
         version: 7.0.2
@@ -904,6 +907,12 @@ packages:
 
   '@stacks/common@7.0.2':
     resolution: {integrity: sha512-+RSecHdkxOtswmE4tDDoZlYEuULpnTQVeDIG5eZ32opK8cFxf4EugAcK9CsIsHx/Se1yTEaQ21WGATmJGK84lQ==}
+
+  '@stacks/connect-react@23.0.12':
+    resolution: {integrity: sha512-o6qcl4j4uOuP9l12IodMO+RINOalauG6nfzxqiW5hyjF+8iclVllIhhaBkxHyC+HPElS9lp4cldjI2+QUeSYJQ==}
+    peerDependencies:
+      react: ^16.x || 17.x || 18.x
+      react-dom: ^16.x || 17.x || 18.x
 
   '@stacks/connect-ui@8.0.0':
     resolution: {integrity: sha512-m8yqg28EWQCATkVxILotzbqvcnk0n+qhyncTTNEYXVe4VnfV0eRXvxX88nbA/fot1k+MuQlMu3WhrBFLHJ/xzA==}
@@ -3080,6 +3089,14 @@ snapshots:
       '@types/node': 18.19.86
 
   '@stacks/common@7.0.2': {}
+
+  '@stacks/connect-react@23.0.12(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@stacks/connect': 8.1.9
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    transitivePeerDependencies:
+      - encoding
 
   '@stacks/connect-ui@8.0.0':
     dependencies:

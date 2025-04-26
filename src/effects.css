@@ -1,0 +1,77 @@
+.backlight {
+    position: relative;
+}
+
+.backlight::after {
+    position: absolute;
+    content: "";
+    top: 5vw;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    transform: scale(0.75);
+    filter: blur(5vw);
+    background: linear-gradient(270deg, #ffbb0f, #0f7fff);
+    background-size: 200% 200%;
+    animation: animateBacklight 10s ease infinite;
+}
+
+.box-shadow-glow {
+    --color-1: rgba(0, 255, 238, 0.5);
+    --color-2: rgba(0, 157, 255, 0.5);
+    --color-3: rgba(255, 247, 0, 0.5);
+    --color-4: rgba(255, 200, 0, 0.5);
+    box-shadow: -20px -20px 40px -30px var(--color-1),
+        -20px 20px 40px -30px var(--color-2),
+        20px -20px 40px -30px var(--color-3),
+        20px 20px 40px -30px var(--color-4);
+    animation: boxShadowGlow 10s infinite alternate;
+}
+
+@keyframes animateBacklight {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+}
+
+@keyframes boxShadowGlow {
+    0% {
+        box-shadow: -20px -20px 40px -30px var(--color-1),
+            -20px 20px 40px -30px var(--color-2),
+            20px -20px 40px -30px var(--color-3),
+            20px 20px 40px -30px var(--color-4);
+    }
+    25% {
+        box-shadow: 20px -20px 40px -30px var(--color-1),
+            -20px -20px 40px -30px var(--color-2),
+            20px 20px 40px -30px var(--color-3),
+            -20px 20px 40px -30px var(--color-4);
+    }
+    50% {
+        box-shadow: 20px 20px 40px -30px var(--color-1),
+            20px -20px 40px -30px var(--color-2),
+            -20px 20px 40px -30px var(--color-3),
+            -20px -20px 40px -30px var(--color-4);
+    }
+    75% {
+        box-shadow: -20px 20px 40px -30px var(--color-1),
+            20px 20px 40px -30px var(--color-2),
+            -20px -20px 40px -30px var(--color-3),
+            20px -20px 40px -30px var(--color-4);
+    }
+    100% {
+        box-shadow: -20px -20px 40px -30px var(--color-1),
+            -20px 20px 40px -30px var(--color-2),
+            20px -20px 40px -30px var(--color-3),
+            20px 20px 40px -30px var(--color-4);
+    }
+}

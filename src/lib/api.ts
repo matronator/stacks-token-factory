@@ -13,7 +13,7 @@ export async function getContractContent(values: z.infer<typeof formSchema>): Pr
         arguments: {
             name: values.tokenName.replace(/ /g, '-'),
             editableUri: true,
-            userWallet: getLocalStorage()?.addresses[0],
+            userWallet: getLocalStorage()?.addresses.stx[0].address,
             ...values,
         }
     }

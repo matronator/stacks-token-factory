@@ -208,6 +208,7 @@
 
   @layer utilities {
     .title-orange-text {
+      @apply text-transparent bg-gradient-to-tr from-yellow-400 to-orange-500 via-amber-400 bg-clip-text shadow-sm;
       animation: pulseText 3s infinite alternate forwards;
       filter: drop-shadow(0 0 30px rgba(255, 143, 7, 0.85)) drop-shadow(0 0 12px rgba(255, 210, 7, 0.85));
     }
@@ -215,6 +216,7 @@
       text-shadow: none;
     }
     .title-blue-text {
+      @apply font-black text-white;
       /* color: #fffa; */
       filter: drop-shadow(0 0 20px rgba(22, 150, 255, 0.85)) drop-shadow(0 0 8px rgba(80, 249, 255, 0.85));
       background:

@@ -2,10 +2,9 @@ import {
     NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList,
     navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
-import { Link } from '@radix-ui/react-navigation-menu';
 import ConnectWallet from './ConnectWallet/ConnectWallet';
 
-export function Header() {
+export function TopNav() {
     return (
         <NavigationMenu className='flex flex-row justify-end ml-auto'>
             <NavigationMenuList>
@@ -17,5 +16,11 @@ export function Header() {
                 <ConnectWallet />
             </NavigationMenuList>
         </NavigationMenu>
+    );
+}
+
+export function Logo() {
+    return (
+        <h1 className='display-5 my-12'><span className='title-orange-text'>Stacks</span> <strong className='title-blue-text'>Token Factory</strong></h1>
     );
 }
