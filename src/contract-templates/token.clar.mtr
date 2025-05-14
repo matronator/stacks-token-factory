@@ -1,17 +1,21 @@
 ;; Implement the `ft-trait` trait defined in the `ft-trait` contract
-;; (impl-trait .ft-trait.sip-010-trait)
+<# (impl-trait .ft-trait.sip-010-trait) #>
 (impl-trait 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
+<% if $tokenSupply > 0 %>
+(define-fungible-token <% name|kebabCase %> u<% tokenSupply %>)
+<% else %>
 (define-fungible-token <% name|kebabCase %>)
+<% endif %>
 
 (define-constant ERR_OWNER_ONLY (err u100))
 (define-constant ERR_NOT_TOKEN_OWNER (err u101))
 
-(define-constant CONTRACT_OWNER tx-sender)
-(define-constant TOKEN_URI u"<% tokenUri %>>") ;; utf-8 string with token metadata host
+(define-constant CONTRACT_OWNER '<% userWallet %>)
+(define-constant TOKEN_URI u"<% tokenUri %>") ;; utf-8 string with token metadata host
 (define-constant TOKEN_NAME "<% name %>")
-(define-constant TOKEN_SYMBOL "<% symbol %>")
-(define-constant TOKEN_DECIMALS u<% decimals %>) ;; 6 units displayed past decimal, e.g. 1.000_000 = 1 token
+(define-constant TOKEN_SYMBOL "<% tokenSymbol %>")
+(define-constant TOKEN_DECIMALS u<% tokenDecimals %>) ;; 6 units displayed past decimal, e.g. 1.000_000 = 1 token
 
 ;; get the token balance of owner
 (define-read-only (get-balance (owner principal))
@@ -41,14 +45,13 @@
   (recipient principal)
   (memo (optional (buff 34)))
 )
-  (begin
-    ;; #[filter(amount, recipient)]
-    (asserts! (is-eq tx-sender sender) ERR_NOT_TOKEN_OWNER)
-    (try! (ft-transfer? clarity-coin amount sender recipient))
-    (match memo to-print (print to-print) 0x)
-    (ok true)
-  )
-)
+  (if (is-eq tx-sender sender)
+    (begin
+      (try! (ft-transfer? <% name|kebabCase %> amount sender recipient))
+      (print memo)
+      (ok true)
+    )
+    (err ERR_NOT_TOKEN_OWNER)))
 
 (define-public (get-token-uri)
   (ok TOKEN_URI))
@@ -60,16 +63,22 @@
       (ok true))
     (err u4)))
 
+<# add condition based on if the mint amount is fixed or not #>
+<# if it is, the mint function won't take amount as an argument #>
+<# also, depending on if anyone can mint, check the contract owner or not #>
 <% if $mintable === true %>
-
 (define-public (mint (amount uint) (recipient principal))
   (begin
     (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_OWNER_ONLY)
-    (ft-mint? clarity-coin amount recipient)
+    (ft-mint? <% name|kebabCase %> amount recipient)
   )
 )
-
 <% endif %>
 
-;; Mint this token to a few people when deployed
-(ft-mint? <% name|kebabCase %> u<% supply %> '<% userWallet %>)
+<% if $mintable %>
+<% if $initialAmount > 0 %>
+(ft-mint? <% name|kebabCase %> u<% initialAmount %> CONTRACT_OWNER)
+<% endif %>
+<% else %>
+(ft-mint? <% name|kebabCase %> u<% tokenSupply %> CONTRACT_OWNER)
+<% endif %>
