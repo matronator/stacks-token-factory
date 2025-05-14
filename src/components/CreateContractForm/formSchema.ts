@@ -10,7 +10,7 @@ export const formSchema = z.object({
     burnable: z.boolean().optional(),
     mintFixedAmount: z.boolean().optional(),
     mintAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
-    initialAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
+    initialAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
     allowMintToAll: z.boolean().optional(),
     burnAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
     allowBurnToAll: z.boolean().optional(),
@@ -43,7 +43,7 @@ export const formSchema = z.object({
         data.mintAmount = undefined;
         data.allowMintToAll = undefined;
         data.mintFixedAmount = undefined;
-        data.initialAmount = undefined;
+        data.initialAmount = 0;
     }
 
     if (data.burnable) {

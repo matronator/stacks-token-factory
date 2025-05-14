@@ -5,17 +5,17 @@
 .backlight::after {
     position: absolute;
     content: "";
-    top: 5vw;
+    top: 3%;
     left: 0;
     right: 0;
     z-index: -1;
     height: 100%;
     width: 100%;
     margin: 0 auto;
-    transform: scale(0.75);
-    filter: blur(5vw);
-    background: linear-gradient(270deg, #ffbb0f, #0f7fff);
-    background-size: 200% 200%;
+    transform: scale(0.8);
+    filter: blur(4vw);
+    background: linear-gradient(to right in oklch, #ffb30f, #0479ff);
+    background-size: 300% 300%;
     animation: animateBacklight 10s ease infinite;
 }
 

@@ -19,14 +19,14 @@ export async function getContractContent(values: z.infer<typeof formSchema>): Pr
     }
     const payload = JSON.stringify(body);
 
-    if (ls.get('values') === payload) {
+    if (ls.get('tokenFormValues') === payload) {
         const code: string = ls.get('contractCode') ?? '';
         if (code !== '') {
             return code;
         }
     }
 
-    ls.set('values', payload);
+    ls.set('tokenFormValues', payload);
 
     const res = await fetch(API_URL + '/generate/contract/token', {
         method: 'POST',

@@ -6,7 +6,7 @@ import ConnectWallet from './ConnectWallet/ConnectWallet';
 
 export function TopNav() {
     return (
-        <NavigationMenu className='flex flex-row justify-end ml-auto'>
+        <NavigationMenu className='flex flex-row justify-end ml-auto' delayDuration={0}>
             <NavigationMenuList>
                 <NavigationMenuItem>
                     <NavigationMenuLink className={navigationMenuTriggerStyle()} href='/'>

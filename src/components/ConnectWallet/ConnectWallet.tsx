@@ -1,12 +1,13 @@
 import ls from 'localstorage-slim';
-import { Badge } from '@/components/ui/badge';
 import {
     NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger
 } from '@/components/ui/navigation-menu';
 import { store } from '@/lib/state';
 import { connect, disconnect, getLocalStorage, isConnected } from '@stacks/connect';
 import stxIcon from '../../assets/STX.svg';
+import btcIcon from '../../assets/BTC.svg';
 import { Button } from '../Button';
+import { CopyToClipboard } from '@/components/ui/copy-to-clipboard';
 
 function authenticate() {
   connect({
@@ -14,17 +15,17 @@ function authenticate() {
     //   name: "Stacks Token Factory",
     //   icon: window.location.origin + "/logo512.png",
     // },
-    redirectTo: "/",
-    onFinish: async () => {
-      const userData = await getLocalStorage();
+    // redirectTo: "/",
+    // onFinish: async () => {
+    //   const userData = await getLocalStorage();
 
-      store.userData = userData;
-      store.loggedIn = true;
+    //   store.userData = userData;
+    //   store.loggedIn = true;
 
-      ls.set('userData', userData);
+    //   ls.set('userData', userData);
 
-      window.location.reload();
-    },
+    //   window.location.reload();
+    // },
   });
 }
 
@@ -59,12 +60,20 @@ const ConnectWallet = (props: ConnectWalletProps) => {
             </div>
           </NavigationMenuTrigger>
           <NavigationMenuContent className="p-4 w-max">
-            <div className="grid grid-cols-2 mb-4">
-              <div><img src={stxIcon} alt="STX" /></div>
-            </div>
+            <div className="text-sm font-bold mb-2">Connected Wallets</div>
             <ul className="relative grid grid-cols-1 pr-0 w-max whitespace-nowrap">
-              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center">mainnet:</Badge><span className="col-span-6 pr-0 text-center">{store.userData?.addresses?.stx[0]?.address}</span></li>
-              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap"><Badge className="block w-full col-span-1 text-center" variant="secondary">testnet:</Badge><span className="col-span-6 pr-0 text-center">{store.userData?.addresses?.stx[0]?.address}</span></li>
+              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap">
+                <img src={stxIcon} alt="STX" />
+                <CopyToClipboard text={store.userData?.addresses?.stx[0]?.address ?? 'No address'}>
+                  <span className="col-span-6 pr-0 text-center">{store.userData?.addresses?.stx[0]?.address}</span>
+                </CopyToClipboard>
+              </li>
+              <li className="grid grid-flow-col-dense mb-2 auto-cols-fr whitespace-nowrap">
+                <img src={btcIcon} alt="BTC" />
+                <CopyToClipboard text={store.userData?.addresses?.btc[0]?.address ?? 'No address'}>
+                  <span className="col-span-6 pr-0 text-center">{store.userData?.addresses?.btc[0]?.address}</span>
+                </CopyToClipboard>
+              </li>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
