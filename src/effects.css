@@ -1,3 +1,5 @@
+@import 'glass-border.css';
+
 .backlight {
     position: relative;
 }
@@ -13,9 +15,9 @@
     width: 100%;
     margin: 0 auto;
     transform: scale(0.8);
-    filter: blur(4vw);
+    filter: blur(80px);
     background: linear-gradient(to right in oklch, #ffb30f, #0479ff);
-    background-size: 300% 300%;
+    background-size: 400% 400%;
     animation: animateBacklight 10s ease infinite;
 }
 

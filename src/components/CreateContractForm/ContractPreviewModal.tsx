@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
-import ContractEditor from "../editor/ContractEditor";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
+import ContractEditor from "@/components/editor/ContractEditor";
+import { Button } from "../Button";
+import { Separator } from "@/components/ui/separator";
 import { formSchema } from "./formSchema";
 import { z } from "zod";
 
@@ -53,8 +53,6 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractCo
                         <Separator className='my-4' />
                         <h3>Contract Clarity Code</h3>
                         <ContractEditor contractBody={contractContent} />
-                        <pre id="" className='p-4 overflow-x-auto font-mono text-sm rounded-lg bg-slate-900'>
-                        </pre>
                     </div>
                 </div>
                 <Separator className='my-4' />

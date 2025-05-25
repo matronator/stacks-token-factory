@@ -22,9 +22,15 @@ export const formSchema = z.object({
     }
 
     if (data.mintable) {
-        if (!data.mintAmount) {
+        if (data.mintAmount === undefined) {
             ctx.addIssue({ path: ['mintAmount'], message: 'You must specify the amount to mint when your token is mintable.' } as IssueData);
         } else {
+            if (data.mintAmount <= 0) {
+                if (data.mintFixedAmount) {
+                    ctx.addIssue({ path: ['mintAmount'], message: 'You must specify a mint amount greater than 0 when minting fixed amounts.' } as IssueData);
+                }
+            }
+
             if (data.tokenSupply > 0) {
                 if (data.mintAmount > data.tokenSupply) {
                     ctx.addIssue({ path: ['mintAmount'], message: 'You cannot mint more tokens than the total supply.' } as IssueData);
@@ -41,8 +47,8 @@ export const formSchema = z.object({
         }
     } else {
         data.mintAmount = undefined;
-        data.allowMintToAll = undefined;
-        data.mintFixedAmount = undefined;
+        data.allowMintToAll = true;
+        data.mintFixedAmount = true;
         data.initialAmount = 0;
     }
 

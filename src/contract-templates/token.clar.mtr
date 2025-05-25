@@ -1,3 +1,6 @@
+<# The template for generating the contract.
+Uses MTRGen and Pars'Em under the hood #>
+
 ;; Implement the `ft-trait` trait defined in the `ft-trait` contract
 <# (impl-trait .ft-trait.sip-010-trait) #>
 (impl-trait 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
@@ -8,8 +11,8 @@
 (define-fungible-token <% name|kebabCase %>)
 <% endif %>
 
-(define-constant ERR_OWNER_ONLY (err u100))
-(define-constant ERR_NOT_TOKEN_OWNER (err u101))
+(define-constant ERR_ADMIN_ONLY (err u401))
+(define-constant ERR_NOT_TOKEN_OWNER (err u403))
 
 (define-constant CONTRACT_OWNER '<% userWallet %>)
 (define-constant TOKEN_URI u"<% tokenUri %>") ;; utf-8 string with token metadata host
@@ -61,24 +64,24 @@
     (begin
       (ft-set-token-uri <% name|kebabCase %> token_uri)
       (ok true))
-    (err u4)))
+    (err ERR_ADMIN_ONLY)))
 
 <# add condition based on if the mint amount is fixed or not #>
 <# if it is, the mint function won't take amount as an argument #>
-<# also, depending on if anyone can mint, check the contract owner or not #>
 <% if $mintable === true %>
 (define-public (mint (amount uint) (recipient principal))
   (begin
-    (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_OWNER_ONLY)
+<% if !$allowMintToAll %>
+    (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_ADMIN_ONLY)
+<% endif %>
     (ft-mint? <% name|kebabCase %> amount recipient)
   )
 )
 <% endif %>
 
-<% if $mintable %>
 <% if $initialAmount > 0 %>
 (ft-mint? <% name|kebabCase %> u<% initialAmount %> CONTRACT_OWNER)
 <% endif %>
-<% else %>
+<% if !$mintable %>
 (ft-mint? <% name|kebabCase %> u<% tokenSupply %> CONTRACT_OWNER)
 <% endif %>

@@ -9,8 +9,8 @@ import btcIcon from '../../assets/BTC.svg';
 import { Button } from '../Button';
 import { CopyToClipboard } from '@/components/ui/copy-to-clipboard';
 
-function authenticate() {
-  connect({
+async function authenticate() {
+  const res = await connect({
     // appDetails: {
     //   name: "Stacks Token Factory",
     //   icon: window.location.origin + "/logo512.png",
@@ -27,6 +27,14 @@ function authenticate() {
     //   window.location.reload();
     // },
   });
+
+  if (res?.addresses[0]?.address !== null) {
+    const userData = getLocalStorage();
+    store.userData = userData;
+    store.loggedIn = true;
+    ls.set('userData', userData);
+    window.location.reload();
+  }
 }
 
 function disconnectWallet() {

@@ -1,8 +1,23 @@
-import { ComponentPropsWithoutRef, ElementType, isValidElement, ReactNode } from 'react';
+import { cn } from '@/lib/utils';
+import { cva, VariantProps } from 'class-variance-authority';
+import { type ComponentPropsWithoutRef, type ElementType, isValidElement, ReactNode } from 'react';
 
-interface ButtonProps<T extends ElementType> {
+const buttonVariants = cva(
+    `btn`,
+    {
+        variants: {
+            variant: {
+                default: '',
+                primary: 'btn-primary',
+                secondary: 'btn-secondary',
+                outline: 'btn-outline',
+            }
+        }
+    }
+);
+
+interface ButtonProps<T extends ElementType> extends VariantProps<typeof buttonVariants> {
     as?: T;
-    variant?: 'default' | 'primary' | 'secondary' | 'outline';
     children?: ReactNode;
 }
 
@@ -18,11 +33,15 @@ function ButtonText(children: ReactNode) {
     return children;
 }
 
-export function Button<T extends ElementType = 'button'>({ as, variant = 'default', children, ...props }: ButtonProps<T> & Omit<ComponentPropsWithoutRef<T>, keyof ButtonProps<T>>) {
+export function Button<T extends ElementType = 'button'>({ as, variant = 'default', children, className, ...props }: ButtonProps<T> & Omit<ComponentPropsWithoutRef<T>, keyof ButtonProps<T>>) {
     const Component = as || 'button';
     return (
-        <Component data-text={ButtonText(children)} {...props} className={`btn ${variant !=='default' ? `btn-${variant}` : ''} ${props.className ?? ''}`}>
-            {!['primary', 'secondary'].includes(variant) ? children : ''}
+        <Component
+            data-text={ButtonText(children)}
+            className={cn(buttonVariants({ variant, className }))}
+            {...props}
+        >
+            {!['primary', 'secondary'].includes(variant ?? '') ? children : ''}
         </Component>
     );
 }

@@ -8,7 +8,7 @@ export async function liftOff(
   claritySyntax: Record<string, any>
 ) {
   try {
-    await loadWASM(`node_modules/onigasm/lib/onigasm.wasm`);
+    await loadWASM(import.meta.env.VITE_ONIGASM_PATH);
     const registry = new Registry({
       getGrammarDefinition: (scopeName) =>
         Promise.resolve({

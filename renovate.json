@@ -4,6 +4,6 @@
     "local>matronator/renovate-config"
   ],
   "ignoreDeps": [
-    "tailwindcss"
+    "tailwindcss", "react-hook-form"
   ]
 }

@@ -1,4 +1,12 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="16" cy="16" r="16" fill="#EF6438"/>
-  <path d="M22.75 25L19.0643 19.2143H24.3571V17.0286H7V19.2143H12.2929L8.60714 25H11.35L15.6786 18.2071L20.0071 25H22.75ZM24.3571 14.9071V12.7214H19.1714L22.8143 7H20.05L15.6786 13.9L11.3071 7H8.54286L12.1857 12.7214H7V14.9286L24.3571 14.9071Z" fill="white"/>
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <bx:export>
+      <bx:file format="png" href="#object-0"/>
+      <bx:file format="png" href="#object-1" path="Untitled 2.png"/>
+      <bx:file format="png" path="Untitled 3.png" width="512" height="512"/>
+    </bx:export>
+  </defs>
+  <circle cx="16" cy="16" r="16" fill="#EF6438" id="object-0"/>
+  <path d="M22.75 25L19.0643 19.2143H24.3571V17.0286H7V19.2143H12.2929L8.60714 25H11.35L15.6786 18.2071L20.0071 25H22.75ZM24.3571 14.9071V12.7214H19.1714L22.8143 7H20.05L15.6786 13.9L11.3071 7H8.54286L12.1857 12.7214H7V14.9286L24.3571 14.9071Z" fill="white" id="object-1"/>
 </svg>

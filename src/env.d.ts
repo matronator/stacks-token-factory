@@ -2,8 +2,9 @@
 
 interface ImportMetaEnv {
     readonly VITE_API_URL: string
+    readonly VITE_ONIGASM_PATH: string
 }
-  
+
 interface ImportMeta {
     readonly env: ImportMetaEnv
 }

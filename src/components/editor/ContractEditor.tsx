@@ -45,6 +45,14 @@ function ContractEditor(props: ContractEditorProps) {
           minimap: {
             enabled: false,
           },
+          emptySelectionClipboard: true,
+          selectionClipboard: false,
+          copyWithSyntaxHighlighting: true,
+          domReadOnly: true,
+          dragAndDrop: false,
+          stickyScroll: {
+            enabled: false,
+          }
         }}
       />
     </div>
