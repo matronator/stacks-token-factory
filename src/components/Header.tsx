@@ -22,7 +22,7 @@ export function TopNav({ onLimitedGfx, limitedGfx }: TopNavProps) {
                 </NavigationMenuItem>
                 <ConnectWallet />
                 <NavigationMenuItem>
-                    <div className="flex items-center space-x-2">
+                    <div className="ml-4 flex items-center space-x-2">
                         <Switch id="limited-gfx" onCheckedChange={onLimitedGfx} checked={!limitedGfx} />
                         <Label htmlFor="limited-gfx" className='cursor-pointer'>Effects {limitedGfx ? 'Off' : 'On'}</Label>
                     </div>

@@ -17,7 +17,7 @@ function App() {
       <Logo />
 
       <div className='container max-w-xl'>
-        <CreateContractForm />
+        <CreateContractForm limitedGfx={limitedGfx} />
       </div>
     </div>
   );

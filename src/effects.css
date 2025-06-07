@@ -21,7 +21,23 @@
     animation: animateBacklight 10s ease infinite;
 }
 
+.backlight.wallet-alert-outter::after {
+    position: absolute;
+    content: "";
+    top: 10%;
+    /* z-index: -1; */
+    height: 90%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to right in oklch, #ffcf0f, #ff0404);
+    background-size: 400% 400%;
+    animation: animateBacklight 10s ease infinite;
+    transform: scaleX(0.9) scaleY(0.7);
+    filter: blur(80px);
+}
+
 .App.limited-gfx .backlight::after {
+    content: "";
     box-shadow: -20px 0 40px -5px #ffb30faa, 20px 0 40px -5px #0479ffaa;
     animation: none;
     filter: none;

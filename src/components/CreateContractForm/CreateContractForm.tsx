@@ -17,8 +17,13 @@ import { getSelectedProvider, getSelectedProviderId, isConnected, makeContractDe
 import { ContractPreviewModal } from './ContractPreviewModal';
 import { ContractFormItem } from './ContractFormItem';
 import { cvToHex, Pc, PostCondition, PostConditionMode, PostConditionType, StxPostCondition } from '@stacks/transactions';
+import { AlertTriangleIcon, ExternalLinkIcon } from 'lucide-react';
 
-export function CreateContractForm() {
+interface CreateContractFormProps {
+    limitedGfx?: boolean;
+}
+
+export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -151,6 +156,29 @@ export function CreateContractForm() {
             <div className='flex flex-col items-center justify-center my-8'>
                 <p className='text-base italic font-thin text-transparent max-w-fit bg-clip-text bg-gradient-to-br from-orange-400 via-yellow-300 to-red-500'>You must connect your Stacks wallet to start creating new tokens.</p>
                 <ConnectWallet connectText="Connect wallet to get started" />
+                <div className={`${limitedGfx ? '' : 'backlight'} wallet-alert-outter mt-8`}>
+                    <div className={`${limitedGfx ? '' : 'glass-border glass-border-short'} wallet-alert`}>
+                        {!limitedGfx && (
+                            <>
+                                <span className="shine"></span>
+                                <span className="shine shine-bottom"></span>
+                                <span className="glow glow-top"></span>
+                                <span className="glow glow-bottom"></span>
+                                <span className="glow glow-bright glow-top"></span>
+                                <span className="glow glow-bright glow-bottom"></span>
+                            </>
+                        )}
+                        <div className={`p-2 rounded-lg border border-red-500 border-solid grid grid-cols-12 text-left ${limitedGfx ? 'bg-gray-800/70' : ''}`}>
+                            <div className='col-span-2 flex items-center justify-center'>
+                                <AlertTriangleIcon size={`2.5rem`} className='text-red-500' />
+                            </div>
+                            <div className='col-span-10'>
+                                <p className='text-lg font-bold text-transparent max-w-fit bg-clip-text bg-gradient-to-br from-orange-500 via-red-500 to-rose-700'>We strongly recommend that you connect with <a href="https://leather.io/wallet" target='_blank' rel='noopener noreferrer' className='text-sky-500 no-underline hover:underline hover:text-sky-400 transition-all inline-flex justify-center items-center'>Leather<ExternalLinkIcon size={`1rem`} className='ml-1' /></a> wallet to use this dApp.</p>
+                                <p className='text-red-400'>Currently deploying contracts doesn't work with Xverse wallet, due to a <a href="https://github.com/hirosystems/connect/issues/456"  target='_blank' rel='noopener noreferrer' className='text-sky-500 no-underline hover:underline hover:text-sky-400 transition-all inline-flex justify-center items-center'>bug<ExternalLinkIcon size={`1rem`} className='ml-1' /></a>. Other wallets might work, but only Leather is tested and guaranteed to work.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

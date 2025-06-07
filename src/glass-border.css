@@ -7,6 +7,21 @@
     --glass-border-ease: cubic-bezier(0.5, 1, 0.89, 1);
 }
 
+.wallet-alert {
+    --glass-border-hue1: 0;
+    --glass-border-hue2: 32;
+    position: relative;
+    max-height: fit-content;
+}
+
+.wallet-alert-outter {
+    position: relative;
+}
+
+.App.limited-gfx .wallet-alert-outter {
+    box-shadow: 0 0 40px -5px #ff0404aa;
+}
+
 .App:not(.limited-gfx) .glass-border {
     transition-property: opacity, filter;
     transition-duration: 0s, 0.25s, 0.25s, 0.25s;
@@ -94,7 +109,12 @@
     mask-repeat: no-repeat;
     mask-clip: padding-box, border-box;
     mask-composite: subtract;
+}
 
+.glass-border.glass-border-short .shine,
+.glass-border.glass-border-short .shine::before,
+.glass-border.glass-border-short .shine::after {
+    aspect-ratio: 9 / 4.25;
 }
 
 .glass-border .shine::before,
