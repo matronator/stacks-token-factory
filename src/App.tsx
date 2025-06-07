@@ -1,21 +1,25 @@
+import { useState } from 'react';
 import './App.css';
-import ContractCallVote from './components/ContractCallVote';
 import { CreateContractForm } from './components/CreateContractForm/CreateContractForm';
-import { Header } from './components/Header';
+import { Logo, TopNav } from './components/Header';
+import ls from 'localstorage-slim';
 
 function App() {
-  return (
-    <>
-      <Header />
-      <h1 className='text-orange-500 shadow-sm display-5 stacks-text-shadow'>Stacks <strong className='font-black text-transparent bg-gradient-to-tr via-indigo-500 to-purple-500 from-purple-700 bg-clip-text no-text-shadow'>Token Factory</strong></h1>
+  const [limitedGfx, setLimitedGfx] = useState<boolean>(ls.get('limitedGfx') ?? false);
+  function triggerLimitedGfx() {
+    ls.set('limitedGfx', !limitedGfx);
+    setLimitedGfx(!limitedGfx);
+  }
 
-      {/* ContractCallVote file: `./src/components/ContractCallVote.js` */}
-      <ContractCallVote />
+  return (
+    <div className={`App${limitedGfx ? ' limited-gfx' : ''}`}>
+      <TopNav onLimitedGfx={triggerLimitedGfx} limitedGfx={limitedGfx} />
+      <Logo />
 
       <div className='container max-w-xl'>
-        <CreateContractForm />
+        <CreateContractForm limitedGfx={limitedGfx} />
       </div>
-    </>
+    </div>
   );
 }
 

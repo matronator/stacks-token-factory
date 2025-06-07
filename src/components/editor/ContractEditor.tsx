@@ -25,12 +25,29 @@ function ContractEditor(props: ContractEditorProps) {
   );
 
   return (
-    <div className='w-full bg-gray-900 rounded-md h-96'>
+    <div className='w-full bg-gray-900 rounded-md h-96 relative'>
       <Editor
         beforeMount={handleEditorWillMount}
-        onMount={(editor) => {
+        onMount={(editor, monaco) => {
           editor.updateOptions({
             wordSeparators: "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
+          });
+
+          editor.onKeyDown((event) => {
+            const { keyCode, ctrlKey, metaKey } = event;
+            if ((keyCode === 33 || keyCode === 52) && (metaKey || ctrlKey)) {
+              event.preventDefault();
+            }
+          });
+
+          editor.onMouseDown((event) => {
+            if (event.event.rightButton || event.event.altKey || event.event.ctrlKey) {
+              editor.setSelection(new monaco.Selection(0, 0, 0, 0));
+            }
+          });
+
+          editor.onDidChangeCursorSelection(event => {
+            editor.setSelection(new monaco.Selection(0, 0, 0, 0));
           });
         }}
         className="clarity-editor"
@@ -39,11 +56,20 @@ function ContractEditor(props: ContractEditorProps) {
         value={props.contractBody}
         options={{
           readOnly: true,
+          contextmenu: false,
           fontLigatures: true,
           fontSize: 14,
           minimap: {
             enabled: false,
           },
+          emptySelectionClipboard: true,
+          selectionClipboard: false,
+          copyWithSyntaxHighlighting: true,
+          domReadOnly: true,
+          dragAndDrop: false,
+          stickyScroll: {
+            enabled: false,
+          }
         }}
       />
     </div>

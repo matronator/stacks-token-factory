@@ -6,19 +6,32 @@ export const formSchema = z.object({
     tokenSupply: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
     tokenDecimals: z.coerce.number().int().min(0).max(18),
     tokenURI: z.union([z.literal(''), z.string().url()]),
+    removeWatermark: z.boolean().optional(),
     mintable: z.boolean().optional(),
     burnable: z.boolean().optional(),
     mintFixedAmount: z.boolean().optional(),
     mintAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
-    initialAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
+    initialAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
     allowMintToAll: z.boolean().optional(),
     burnAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
     allowBurnToAll: z.boolean().optional(),
 }).superRefine((data, ctx) => {
+    if (data.tokenSupply === 0) {
+        if (!data.mintable) {
+            ctx.addIssue({ path: ['tokenSupply'], message: 'You must specify a total supply greater than 0 if your token is not mintable.' } as IssueData);
+        }
+    }
+
     if (data.mintable) {
-        if (!data.mintAmount) {
+        if (data.mintAmount === undefined) {
             ctx.addIssue({ path: ['mintAmount'], message: 'You must specify the amount to mint when your token is mintable.' } as IssueData);
         } else {
+            if (data.mintAmount <= 0) {
+                if (data.mintFixedAmount) {
+                    ctx.addIssue({ path: ['mintAmount'], message: 'You must specify a mint amount greater than 0 when minting fixed amounts.' } as IssueData);
+                }
+            }
+
             if (data.tokenSupply > 0) {
                 if (data.mintAmount > data.tokenSupply) {
                     ctx.addIssue({ path: ['mintAmount'], message: 'You cannot mint more tokens than the total supply.' } as IssueData);
@@ -35,9 +48,9 @@ export const formSchema = z.object({
         }
     } else {
         data.mintAmount = undefined;
-        data.allowMintToAll = undefined;
-        data.mintFixedAmount = undefined;
-        data.initialAmount = undefined;
+        data.allowMintToAll = true;
+        data.mintFixedAmount = true;
+        data.initialAmount = 0;
     }
 
     if (data.burnable) {
