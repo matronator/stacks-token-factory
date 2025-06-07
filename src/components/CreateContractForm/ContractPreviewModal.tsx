@@ -11,9 +11,11 @@ interface ContractPreviewModalProps {
     form: ReturnType<typeof useForm<z.infer<typeof formSchema>>>;
     contractContent: string;
     deployContract: () => Promise<void>;
+    deployed?: boolean;
+    txId?: string;
 }
 
-export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractContent, deployContract }: ContractPreviewModalProps) {
+export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractContent, deployContract, deployed, txId }: ContractPreviewModalProps) {
     if (!modalOpen) return null;
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center p-8 bg-black bg-opacity-75' onClick={(e) => {if (e.target === e.currentTarget) setModalOpen(false)}}>
@@ -32,6 +34,7 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractCo
                     </div>
                     <div>
                         <h3 className='text-lg font-bold'>Token Features</h3>
+                        <p><strong>Watermark:</strong> {form.getValues('removeWatermark') ? 'No' : 'Yes'}</p>
                         <p><strong>Mintable:</strong> {form.getValues('mintable') ? 'Yes' : 'No'}</p>
                         <p><strong>Burnable:</strong> {form.getValues('burnable') ? 'Yes' : 'No'}</p>
                         {form.getValues('mintable') && (
@@ -51,8 +54,17 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractCo
                     </div>
                     <div className="col-span-2">
                         <Separator className='my-4' />
-                        <h3>Contract Clarity Code</h3>
+                        {/* <h3>Contract Clarity Code</h3>
                         <ContractEditor contractBody={contractContent} />
+                        <pre>{contractContent}</pre> */}
+                        {deployed && (
+                            <div className='text-green-400 text-lg text-center p-4'>
+                                Contract has been successfully deployed!
+                                <div className='mt-4 text-white text-base font-normal'>
+                                    Transaction: <a href={`https://explorer.hiro.so/txid/${txId}`} target='_blank' rel='noopener noreferrer' className='text-orange-500 hover:underline'>{txId}</a>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <Separator className='my-4' />

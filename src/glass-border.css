@@ -7,7 +7,7 @@
     --glass-border-ease: cubic-bezier(0.5, 1, 0.89, 1);
 }
 
-.glass-border {
+.App:not(.limited-gfx) .glass-border {
     transition-property: opacity, filter;
     transition-duration: 0s, 0.25s, 0.25s, 0.25s;
     transition-delay: 0.5s, 0s, 0s, 0s;

@@ -212,6 +212,10 @@
       animation: pulseText 3s infinite alternate forwards;
       filter: drop-shadow(0 0 30px rgba(255, 143, 7, 0.85)) drop-shadow(0 0 12px rgba(255, 210, 7, 0.85));
     }
+    .App.limited-gfx .title-orange-text {
+      filter: none;
+      animation: none;
+    }
     .no-text-shadow {
       text-shadow: none;
     }
@@ -229,6 +233,21 @@
       -webkit-text-fill-color: transparent;
       color:#000;
       animation: shine 5s infinite;
+    }
+
+    .App.limited-gfx .title-blue-text {
+      filter: none;
+      animation: none;
+      background:
+      /* the shine layer */
+      linear-gradient(-45deg, #fff 40%,#00d9ff73,#fff 60%)
+      right/50% 100%,
+      /* the color layer*/
+      linear-gradient(45deg, #fff, #fff);
+      -webkit-text-fill-color: initial;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 20px rgba(22, 150, 255, 0.5), 0 0 8px rgba(80, 249, 255, 0.5);
     }
 
     @keyframes pulseText {

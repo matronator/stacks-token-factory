@@ -6,6 +6,7 @@ export const formSchema = z.object({
     tokenSupply: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
     tokenDecimals: z.coerce.number().int().min(0).max(18),
     tokenURI: z.union([z.literal(''), z.string().url()]),
+    removeWatermark: z.boolean().optional(),
     mintable: z.boolean().optional(),
     burnable: z.boolean().optional(),
     mintFixedAmount: z.boolean().optional(),

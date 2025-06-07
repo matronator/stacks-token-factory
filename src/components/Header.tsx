@@ -3,8 +3,15 @@ import {
     navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
 import ConnectWallet from './ConnectWallet/ConnectWallet';
+import { Switch } from './ui/switch';
+import { Label } from './ui/label';
 
-export function TopNav() {
+interface TopNavProps {
+    onLimitedGfx?: () => void;
+    limitedGfx?: boolean;
+}
+
+export function TopNav({ onLimitedGfx, limitedGfx }: TopNavProps) {
     return (
         <NavigationMenu className='flex flex-row justify-end ml-auto' delayDuration={0}>
             <NavigationMenuList>
@@ -14,6 +21,12 @@ export function TopNav() {
                     </NavigationMenuLink>
                 </NavigationMenuItem>
                 <ConnectWallet />
+                <NavigationMenuItem>
+                    <div className="flex items-center space-x-2">
+                        <Switch id="limited-gfx" onCheckedChange={onLimitedGfx} checked={!limitedGfx} />
+                        <Label htmlFor="limited-gfx" className='cursor-pointer'>Effects {limitedGfx ? 'Off' : 'On'}</Label>
+                    </div>
+                </NavigationMenuItem>
             </NavigationMenuList>
         </NavigationMenu>
     );

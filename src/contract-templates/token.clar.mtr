@@ -1,87 +1,93 @@
 <# The template for generating the contract.
 Uses MTRGen and Pars'Em under the hood #>
 
-;; Implement the `ft-trait` trait defined in the `ft-trait` contract
 <# (impl-trait .ft-trait.sip-010-trait) #>
 (impl-trait 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
-<% if $tokenSupply > 0 %>
-(define-fungible-token <% name|kebabCase %> u<% tokenSupply %>)
-<% else %>
-(define-fungible-token <% name|kebabCase %>)
-<% endif %>
+(define-fungible-token <% name|kebabCase %><% if $tokenSupply > 0 %> u<% tokenSupply %><% endif %>)
 
 (define-constant ERR_ADMIN_ONLY (err u401))
+(define-constant ERR_EXCEEDS_MAX_AMOUNT (err u402))
 (define-constant ERR_NOT_TOKEN_OWNER (err u403))
 
 (define-constant CONTRACT_OWNER '<% userWallet %>)
-(define-constant TOKEN_URI u"<% tokenUri %>") ;; utf-8 string with token metadata host
-(define-constant TOKEN_NAME "<% name %>")
-(define-constant TOKEN_SYMBOL "<% tokenSymbol %>")
-(define-constant TOKEN_DECIMALS u<% tokenDecimals %>) ;; 6 units displayed past decimal, e.g. 1.000_000 = 1 token
+<% if $mintable === true %>
+<% if $mintAmount > 0 %>
+(define-constant MAX_MINT_AMOUNT u<% mintAmount %>)
+<% endif %>
+<% endif %>
 
-;; get the token balance of owner
+(define-data-var token-uri (string-utf8 256) u"<% tokenUri %>")
+
 (define-read-only (get-balance (owner principal))
   (begin
     (ok (ft-get-balance <% name|kebabCase %> owner))))
 
-;; returns the total number of tokens
 (define-read-only (get-total-supply)
   (ok (ft-get-supply <% name|kebabCase %>)))
 
-;; returns the token name
 (define-read-only (get-name)
-  (ok TOKEN_NAME))
+  (ok "<% name %>"))
 
-;; the symbol or "ticker" for this token
 (define-read-only (get-symbol)
-  (ok TOKEN_SYMBOL))
+  (ok "<% tokenSymbol %>"))
 
-;; the number of decimals used
 (define-read-only (get-decimals)
-  (ok TOKEN_DECIMALS))
+  (ok u<% tokenDecimals %>))
 
-;; Transfers tokens to a recipient
 (define-public (transfer
   (amount uint)
   (sender principal)
   (recipient principal)
   (memo (optional (buff 34)))
 )
-  (if (is-eq tx-sender sender)
-    (begin
-      (try! (ft-transfer? <% name|kebabCase %> amount sender recipient))
-      (print memo)
-      (ok true)
-    )
-    (err ERR_NOT_TOKEN_OWNER)))
+  (begin
+    (asserts! (is-eq tx-sender sender) ERR_NOT_TOKEN_OWNER)
+    (try! (ft-transfer? token-name amount sender recipient))
+    (match memo to-print (print to-print) 0x)
+    (ok true)
+  )
+)
 
-(define-public (get-token-uri)
-  (ok TOKEN_URI))
+(define-read-only (get-token-uri)
+  (ok (some (var-get token-uri))))
 
-(define-public (set-token-uri (token_uri (option buff 34)))
-  (if (is-eq tx-sender (ft-get-owner <% name|kebabCase %>))
-    (begin
-      (ft-set-token-uri <% name|kebabCase %> token_uri)
-      (ok true))
-    (err ERR_ADMIN_ONLY)))
+(define-public (set-token-uri (value (string-utf8 256)))
+  (if (is-eq tx-sender CONTRACT_OWNER)
+    (ok (var-set token-uri (some value)))
+    (err ERR_ADMIN_ONLY)
+  )
+)
 
-<# add condition based on if the mint amount is fixed or not #>
-<# if it is, the mint function won't take amount as an argument #>
 <% if $mintable === true %>
-(define-public (mint (amount uint) (recipient principal))
+(define-public (mint <% if !$mintFixedAmount %>(amount uint) <% endif %>(recipient principal))
   (begin
 <% if !$allowMintToAll %>
     (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_ADMIN_ONLY)
 <% endif %>
-    (ft-mint? <% name|kebabCase %> amount recipient)
+<% if !$mintFixedAmount %>
+<% if $mintAmount > 0 %>
+    (asserts! (<= amount MAX_MINT_AMOUNT) (err ERR_EXCEEDS_MAX_AMOUNT))
+<% endif %>
+<% endif %>
+    (ft-mint? <% name|kebabCase %> <% if !$mintFixedAmount %>amount<% else %>u<% mintAmount %><% endif %> recipient)
   )
 )
 <% endif %>
 
+(define-private (send-stx (recipient principal) (amount uint))
+  (begin
+    (try! (stx-transfer? amount tx-sender recipient))
+    (ok true)
+  )
+)
+
+(begin
+  (try! (send-stx 'SP39DTEJFPPWA3295HEE5NXYGMM7GJ8MA0TQX379 u<% deployCost * 1000000 %>))
 <% if $initialAmount > 0 %>
-(ft-mint? <% name|kebabCase %> u<% initialAmount %> CONTRACT_OWNER)
+  (try! (ft-mint? <% name|kebabCase %> u<% initialAmount %> CONTRACT_OWNER))
 <% endif %>
 <% if !$mintable %>
-(ft-mint? <% name|kebabCase %> u<% tokenSupply %> CONTRACT_OWNER)
+  (try! (ft-mint? <% name|kebabCase %> u<% tokenSupply %> CONTRACT_OWNER))
 <% endif %>
+)
