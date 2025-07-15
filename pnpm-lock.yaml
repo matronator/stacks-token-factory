@@ -111,8 +111,8 @@ importers:
         specifier: ^2.0.0
         version: 2.1.5(@types/react@19.1.6)(react@19.1.0)
       zod:
-        specifier: ^3.23.6
-        version: 3.24.4
+        specifier: ^4.0.0
+        version: 4.0.5
     devDependencies:
       '@types/react':
         specifier: ^19.0.0
@@ -2806,6 +2806,9 @@ packages:
 
   zod@3.24.4:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
+
+  zod@4.0.5:
+    resolution: {integrity: sha512-/5UuuRPStvHXu7RS+gmvRf4NXrNxpSllGwDnCBcJZtQsKrviYXm54yDGV2KYNLT5kq0lHGcl7lqWJLgSaG+tgA==}
 
   zone-file@2.0.0-beta.3:
     resolution: {integrity: sha512-6tE3PSRcpN5lbTTLlkLez40WkNPc9vw/u1J2j6DBiy0jcVX48nCkWrx2EC+bWHqC2SLp069Xw4AdnYn/qp/W5g==}
@@ -5712,5 +5715,7 @@ snapshots:
       zod: 3.24.4
 
   zod@3.24.4: {}
+
+  zod@4.0.5: {}
 
   zone-file@2.0.0-beta.3: {}
