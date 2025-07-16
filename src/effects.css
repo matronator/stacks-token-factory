@@ -59,6 +59,21 @@
     animation: boxShadowGlow 10s infinite alternate;
 }
 
+.token-metadata-container {
+    animation: animatePushDown 0.25s ease forwards;
+}
+
+@keyframes animatePushDown {
+    0% {
+        transform-origin: top center;
+        transform: scaleY(0);
+    }
+    100% {
+        transform-origin: top center;
+        transform: scaleY(1);
+    }
+}
+
 @keyframes animateBacklight {
     0% {
       background-position: 0% 50%;

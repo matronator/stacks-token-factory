@@ -4,6 +4,7 @@ import { Button } from "../Button";
 import { Separator } from "@/components/ui/separator";
 import { formSchema } from "./formSchema";
 import { z } from "zod";
+import { LucideCircleCheck } from "lucide-react";
 
 interface ContractPreviewModalProps {
     modalOpen: boolean;
@@ -30,7 +31,8 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractCo
                         <p><strong>Symbol:</strong> {form.getValues('tokenSymbol')}</p>
                         <p><strong>Supply:</strong> {form.getValues('tokenSupply')}</p>
                         <p><strong>Decimals:</strong> {form.getValues('tokenDecimals')}</p>
-                        <p><strong>URI:</strong> {form.getValues('tokenURI')}</p>
+                        {/* TODO: Change this! */}
+                        <p><strong>URI:</strong> {form.getValues('tokenMetadata.image')}</p>
                     </div>
                     <div>
                         <h3 className='text-lg font-bold'>Token Features</h3>
@@ -39,7 +41,7 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractCo
                         <p><strong>Burnable:</strong> {form.getValues('burnable') ? 'Yes' : 'No'}</p>
                         {form.getValues('mintable') && (
                             <>
-                                <h4 className='font-bold text-md'>Mint Options</h4>
+                                <h4 className='font-bold text-md text-gradient-secondary'>Mint Options</h4>
                                 <p><strong>Fixed Amount:</strong> {form.getValues('mintFixedAmount') ? 'Yes' : 'No'}</p>
                                 <p><strong>Allow Mint to All:</strong> {form.getValues('allowMintToAll') ? 'Yes' : 'No'}</p>
                                 <p><strong>Initial Amount:</strong> {form.getValues('initialAmount')}</p>
@@ -47,19 +49,18 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractCo
                         )}
                         {form.getValues('burnable') && (
                             <>
-                                <h4 className='font-bold text-md'>Burn Options</h4>
+                                <h4 className='font-bold text-md text-gradient-primary'>Burn Options</h4>
                                 <p><strong>Allow Burn to All:</strong> {form.getValues('allowBurnToAll') ? 'Yes' : 'No'}</p>
                             </>
                         )}
                     </div>
                     <div className="col-span-2">
                         <Separator className='my-4' />
-                        {/* <h3>Contract Clarity Code</h3>
+                        <h3>Contract Clarity Code</h3>
                         <ContractEditor contractBody={contractContent} />
-                        <pre>{contractContent}</pre> */}
                         {deployed && (
                             <div className='text-green-400 text-lg text-center p-4'>
-                                Contract has been successfully deployed!
+                                <LucideCircleCheck size='1em' className="mr-4" /> Contract has been successfully deployed!
                                 <div className='mt-4 text-white text-base font-normal'>
                                     Transaction: <a href={`https://explorer.hiro.so/txid/${txId}`} target='_blank' rel='noopener noreferrer' className='text-orange-500 hover:underline'>{txId}</a>
                                 </div>
