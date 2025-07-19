@@ -17,7 +17,7 @@ export const formSchema = z.object({
     selfHostMetadata: z.boolean().optional(),
     tokenUri: z.union([z.literal(''), z.string().url()]).optional(),
     tokenMetadata: z.object({
-        description: z.string().max(500),
+        description: z.string().max(500).optional(),
         image: z.union([z.literal(''), z.string().url()]),
     }).optional(),
 }).superRefine((data, ctx) => {

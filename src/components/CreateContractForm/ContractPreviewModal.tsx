@@ -5,18 +5,24 @@ import { Separator } from "@/components/ui/separator";
 import { formSchema } from "./formSchema";
 import { z } from "zod";
 import { LucideCircleCheck } from "lucide-react";
+import { ContractResponse } from "@/lib/api-types";
+import noImage from '../../assets/no-image.webp';
+import { MiddleEllipsis } from "../MiddleEllipsis";
 
 interface ContractPreviewModalProps {
     modalOpen: boolean;
     setModalOpen: (open: boolean) => void;
     form: ReturnType<typeof useForm<z.infer<typeof formSchema>>>;
-    contractContent: string;
+    contractResponse?: ContractResponse;
     deployContract: () => Promise<void>;
     deployed?: boolean;
     txId?: string;
+    loading?: boolean;
 }
 
-export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractContent, deployContract, deployed, txId }: ContractPreviewModalProps) {
+export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractResponse, deployContract, deployed, txId, loading = false }: ContractPreviewModalProps) {
+    const tokenUri = form.getValues('selfHostMetadata') ? form.getValues('tokenUri') : (contractResponse?.tokenUri ?? `Can't get token URI.`);
+
     if (!modalOpen) return null;
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center p-8 bg-black bg-opacity-75' onClick={(e) => {if (e.target === e.currentTarget) setModalOpen(false)}}>
@@ -26,16 +32,24 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractCo
                 <Separator className='my-4' />
                 <div className='grid grid-cols-2 gap-x-4 gap-y-2'>
                     <div>
-                        <h3 className='text-lg font-bold'>Token Details</h3>
-                        <p><strong>Name:</strong> {form.getValues('tokenName')}</p>
-                        <p><strong>Symbol:</strong> {form.getValues('tokenSymbol')}</p>
+                        <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-purple-500 via-pink-400 to-rose-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Token Details</h3>
+                        <p><strong>Name:</strong> {contractResponse?.originalName ?? form.getValues('tokenName')}</p>
+                        <p><strong>Symbol:</strong> {form.getValues('tokenSymbol').toUpperCase()}</p>
                         <p><strong>Supply:</strong> {form.getValues('tokenSupply')}</p>
                         <p><strong>Decimals:</strong> {form.getValues('tokenDecimals')}</p>
-                        {/* TODO: Change this! */}
-                        <p><strong>URI:</strong> {form.getValues('tokenMetadata.image')}</p>
+                        <p><strong>Token URI:</strong> <a href={tokenUri} className="text-sky-500 hover:underline" target="_blank" rel="nofollow noopener"><MiddleEllipsis text={tokenUri} maxLength={64} /></a></p>
+                        {contractResponse?.tokenMetadata && (
+                            <>
+                                <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-purple-500 via-pink-400 to-rose-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Hosted Metadata File</h3>
+                                <p><strong>Name:</strong> {contractResponse?.tokenMetadata?.name}</p>
+                                <p><strong>Description:</strong> {contractResponse?.tokenMetadata?.description}</p>
+                                <p><strong>Image:</strong> <img width="128" className="inline" src={contractResponse?.tokenMetadata?.image ?? noImage} /></p>
+                            </>
+                        )}
                     </div>
                     <div>
-                        <h3 className='text-lg font-bold'>Token Features</h3>
+                        <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-purple-500 via-pink-400 to-rose-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Token Features</h3>
+                        <p><strong>Hosting metadata file:</strong> {form.getValues('selfHostMetadata') ? 'No' : 'Yes'}</p>
                         <p><strong>Watermark:</strong> {form.getValues('removeWatermark') ? 'No' : 'Yes'}</p>
                         <p><strong>Mintable:</strong> {form.getValues('mintable') ? 'Yes' : 'No'}</p>
                         <p><strong>Burnable:</strong> {form.getValues('burnable') ? 'Yes' : 'No'}</p>
@@ -57,7 +71,7 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractCo
                     <div className="col-span-2">
                         <Separator className='my-4' />
                         <h3>Contract Clarity Code</h3>
-                        <ContractEditor contractBody={contractContent} />
+                        <ContractEditor contractBody={contractResponse?.body ?? (loading ? 'Loading contract code...' : 'No contract code was loaded.')} />
                         {deployed && (
                             <div className='text-green-400 text-lg text-center p-4'>
                                 <LucideCircleCheck size='1em' className="mr-4" /> Contract has been successfully deployed!

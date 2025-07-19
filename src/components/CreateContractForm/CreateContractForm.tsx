@@ -20,6 +20,7 @@ import { Pc } from '@stacks/transactions';
 import { AlertTriangleIcon, ExternalLinkIcon } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 import noImage from '../../assets/no-image.webp';
+import { ContractResponse } from '@/lib/api-types';
 
 interface CreateContractFormProps {
     limitedGfx?: boolean;
@@ -51,6 +52,8 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
     const [ modalOpen, setModalOpen ] = useState(false);
     const [ contractContent, setContractContent ] = useState<string>('');
     const [ contractName, setContractName ] = useState<string>('');
+    const [ contractResponse, setContractResponse ] = useState<ContractResponse>();
+    const [ responseLoading, setResponseLoading ] = useState<boolean>(false);
 
     const [ deployStatus, setDeployStatus ] = useState<DeployStatus>(DeployStatus.Pending);
 
@@ -96,9 +99,14 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setModalOpen(true);
-        const contractResponse = await getContractContent(values, calculateDeployCost());
-        setContractContent(contractResponse.body);
-        setContractName(contractResponse.name);
+        setResponseLoading(true);
+        const res = await getContractContent(values, calculateDeployCost()).then((val) => {
+            setResponseLoading(false);
+            return val;
+        });
+        setContractResponse(res);
+        setContractContent(res.body);
+        setContractName(res.name);
     }
 
     async function deployContract() {
@@ -247,7 +255,7 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
                                 <ContractFormItem className='mb-8' additionalCost={5} costApplies={watchMintable} label='Mintable' description='If checked, the token can be minted after the initial supply is minted.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } labelClassName='text-gradient-secondary' />
                             )} />
                             <FormField disabled control={form.control} name="burnable" render={({ field }) => (
-                                <ContractFormItem className='mb-8' label='Burnable' description='If checked, the token can be burned. (AVAILABLE SOON)' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled /> } labelClassName='text-gradient-primary' />
+                                <ContractFormItem disabled className='mb-8' label='Burnable' description='If checked, the token can be burned. (AVAILABLE SOON)' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled /> } labelClassName='text-gradient-primary' />
                             )} />
                             <FormField control={form.control} name="removeWatermark" render={({ field }) => (
                                 <ContractFormItem className='col-span-2 mb-8' additionalCost={5} costApplies={watchRemoveWatermark} label='Remove watermark' description='Check this to remove "TokenFactory" watermark from token name and contract code comments.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } />
@@ -291,10 +299,11 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
                         modalOpen={modalOpen}
                         setModalOpen={setModalOpen}
                         form={form}
-                        contractContent={contractContent}
+                        contractResponse={contractResponse}
                         deployContract={deployContract}
                         deployed={deployStatus === DeployStatus.Success}
                         txId={txId}
+                        loading={responseLoading}
                     />
                 </CardContent>
             </Card>
