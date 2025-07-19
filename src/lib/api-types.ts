@@ -1,6 +1,15 @@
 export interface ContractResponse {
   name: string;
+  originalName: string;
   body: string;
+  tokenUri?: string;
+  tokenMetadata?: TokenMetadata;
+}
+
+export interface TokenMetadata {
+  name: string;
+  description: string;
+  image: string;
 }
 
 export interface StxBalance {

@@ -5,7 +5,6 @@ export const formSchema = z.object({
     tokenSymbol: z.string().min(3).max(10),
     tokenSupply: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
     tokenDecimals: z.coerce.number().int().min(0).max(18),
-    tokenURI: z.union([z.literal(''), z.string().url()]),
     removeWatermark: z.boolean().optional(),
     mintable: z.boolean().optional(),
     burnable: z.boolean().optional(),
@@ -15,7 +14,19 @@ export const formSchema = z.object({
     allowMintToAll: z.boolean().optional(),
     burnAmount: z.coerce.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
     allowBurnToAll: z.boolean().optional(),
+    selfHostMetadata: z.boolean().optional(),
+    tokenUri: z.union([z.literal(''), z.string().url()]).optional(),
+    tokenMetadata: z.object({
+        description: z.string().max(500).optional(),
+        image: z.union([z.literal(''), z.string().url()]),
+    }).optional(),
 }).superRefine((data, ctx) => {
+    if (data.selfHostMetadata) {
+        data.tokenMetadata = undefined;
+    } else {
+        data.tokenUri = undefined;
+    }
+
     if (data.tokenSupply === 0) {
         if (!data.mintable) {
             ctx.addIssue({ path: ['tokenSupply'], message: 'You must specify a total supply greater than 0 if your token is not mintable.' } as IssueData);

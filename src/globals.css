@@ -238,16 +238,12 @@
     .App.limited-gfx .title-blue-text {
       filter: none;
       animation: none;
-      background:
-      /* the shine layer */
-      linear-gradient(-45deg, #fff 40%,#00d9ff73,#fff 60%)
-      right/50% 100%,
-      /* the color layer*/
-      linear-gradient(45deg, #fff, #fff);
-      -webkit-text-fill-color: initial;
+      background: linear-gradient(-45deg, #fff 40%,#00d9ff73,#fff 60%) 100% 100%,
+                  linear-gradient(45deg, #fff, #fff);
+      -webkit-text-fill-color: unset;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 0 20px rgba(22, 150, 255, 0.5), 0 0 8px rgba(80, 249, 255, 0.5);
+      text-shadow: 0 0 20px rgba(22, 150, 255, 0.75), 0 0 40px rgba(80, 249, 255, 0.75);
     }
 
     @keyframes pulseText {

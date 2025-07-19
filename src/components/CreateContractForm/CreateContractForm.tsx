@@ -6,18 +6,21 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { connectWalletToBackend, getContractContent, getDepositAddress } from '@/lib/api';
+import { getContractContent, getDepositAddress } from '@/lib/api';
 import { store } from '@/lib/state';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Account, DeployStatus } from '../../types';
+import { DeployStatus } from '../../types';
 import { Button } from '../Button';
 import ConnectWallet from '../ConnectWallet/ConnectWallet';
 import { formSchema } from './formSchema';
-import { getSelectedProvider, getSelectedProviderId, isConnected, makeContractDeployToken, openContractDeploy, request, showContractDeploy } from '@stacks/connect';
+import { getSelectedProviderId, isConnected, request } from '@stacks/connect';
 import { ContractPreviewModal } from './ContractPreviewModal';
 import { ContractFormItem } from './ContractFormItem';
-import { cvToHex, Pc, PostCondition, PostConditionMode, PostConditionType, StxPostCondition } from '@stacks/transactions';
+import { Pc } from '@stacks/transactions';
 import { AlertTriangleIcon, ExternalLinkIcon } from 'lucide-react';
+import { Textarea } from '../ui/textarea';
+import noImage from '../../assets/no-image.webp';
+import { ContractResponse } from '@/lib/api-types';
 
 interface CreateContractFormProps {
     limitedGfx?: boolean;
@@ -31,7 +34,6 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
             tokenSymbol: '',
             tokenSupply: 0,
             tokenDecimals: 18,
-            tokenURI: '',
             removeWatermark: false,
             mintable: false,
             burnable: false,
@@ -41,25 +43,37 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
             burnAmount: 0,
             allowBurnToAll: false,
             initialAmount: 0,
+            selfHostMetadata: true,
+            tokenUri: '',
+            tokenMetadata: undefined,
         },
     });
 
     const [ modalOpen, setModalOpen ] = useState(false);
     const [ contractContent, setContractContent ] = useState<string>('');
     const [ contractName, setContractName ] = useState<string>('');
+    const [ contractResponse, setContractResponse ] = useState<ContractResponse>();
+    const [ responseLoading, setResponseLoading ] = useState<boolean>(false);
 
     const [ deployStatus, setDeployStatus ] = useState<DeployStatus>(DeployStatus.Pending);
 
     const [ txId, setTxId ] = useState<string|undefined>(undefined);
+
+    const [ tokenImage, setTokenImage ] = useState<string>('');
 
     const watchMintable = form.watch('mintable');
     const watchBurnable = form.watch('burnable');
     const watchMintFixedAmount = form.watch('mintFixedAmount');
     const watchAllowMintToAll = form.watch('allowMintToAll');
     const watchRemoveWatermark = form.watch('removeWatermark');
+    const watchSelfHostMetadata = form.watch('selfHostMetadata');
 
     function calculateDeployCost() {
         let cost = 10;
+
+        if (!watchSelfHostMetadata) {
+            cost += 5;
+        }
 
         if (watchMintable) {
             cost += 5;
@@ -85,9 +99,14 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setModalOpen(true);
-        const contractResponse = await getContractContent(values, calculateDeployCost());
-        setContractContent(contractResponse.body);
-        setContractName(contractResponse.name);
+        setResponseLoading(true);
+        const res = await getContractContent(values, calculateDeployCost()).then((val) => {
+            setResponseLoading(false);
+            return val;
+        });
+        setContractResponse(res);
+        setContractContent(res.body);
+        setContractName(res.name);
     }
 
     async function deployContract() {
@@ -143,7 +162,7 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
                 name: contractName,
                 clarityCode: contractContent,
                 postConditions: [pc],
-                postConditionMode: 'allow',
+                postConditionMode: 'deny',
                 clarityVersion: 3,
             });
             setDeployStatus(DeployStatus.Success);
@@ -199,28 +218,47 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className='grid grid-cols-2 gap-4'>
                             <FormField control={form.control} name="tokenName" render={({ field }) => (
-                                <ContractFormItem label='Token name' description='The name of your token.' control={ <Input placeholder="Token name" {...field} /> } />
+                                <ContractFormItem label='Name' autoCols description='The name of your token.' control={ <Input placeholder="Token name" {...field} /> } />
                             )} />
                             <FormField control={form.control} name="tokenSymbol" render={({ field }) => (
-                                <ContractFormItem label='Token symbol' description='The ticker symbol for your token.' control={ <Input placeholder="TKN" {...field} /> } />
+                                <ContractFormItem label='Symbol' description='The ticker symbol for your token.' control={ <Input placeholder="TKN" {...field} /> } />
                             )} />
                             <FormField control={form.control} name="tokenSupply" render={({ field }) => (
-                                <ContractFormItem label='Total supply' description={`Total supply of your token.${watchMintable ? ' Set to 0 for unlimited supply.' : ''}`} control={ <Input type="number" min={0} placeholder="0" {...field} /> } />
+                                <ContractFormItem label='Total supply' autoCols description={`Total supply of your token.${watchMintable ? ' Set to 0 for unlimited supply.' : ''}`} control={ <Input type="number" min={0} placeholder="0" {...field} /> } />
                             )} />
                             <FormField control={form.control} name="tokenDecimals" render={({ field }) => (
-                                <ContractFormItem label='Token Decimals' description='Number of decimal places for your token. Must be between 0 and 18.' control={ <Input type="number" min={0} placeholder="0" {...field} /> } />
+                                <ContractFormItem label='Decimals' description='Number of decimal places for your token. Must be between 0 and 18.' control={ <Input type="number" min={0} placeholder="0" {...field} /> } />
                             )} />
-                            <FormField control={form.control} name="tokenURI" render={({ field }) => (
-                                <ContractFormItem className='col-span-2 mb-8' label='Token URI' description='Optional URI for your token metadata (can also be IPFS URI).' control={ <Input placeholder="https://example.com/token.json" {...field} /> } />
+                            <FormField control={form.control} name="selfHostMetadata" render={({ field }) => (
+                                <ContractFormItem className='mb-8 col-span-2' costApplies={!watchSelfHostMetadata} additionalCost={5} label='Self-host token metadata' description='You will host the token metadata file yourself and provide only the token URI pointing to the JSON file.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } />
                             )} />
+                            {watchSelfHostMetadata ? (
+                                <FormField control={form.control} name="tokenUri" render={({ field }) => (
+                                    <ContractFormItem className='mb-8 col-span-2' label='Token URI' description='URL pointing to the token metadata JSON file.' control={ <Input type="url" placeholder="https://example.com/coin.json" {...field} /> } />
+                                )} />
+                            ) : (
+                                <div className='col-span-2 grid grid-cols-subgrid token-metadata-container'>
+                                    <div>
+                                        <FormField control={form.control} name="tokenMetadata.image" render={({ field }) => (
+                                            <ContractFormItem className='mb-8' autoCols label='Image URL' description='URL pointing to an image for your token metadata.' control={ <Input type="url" placeholder="https://example.com/coin.png" onInput={(e) => { setTokenImage(e.currentTarget.value); }} {...field} /> } />
+                                        )} />
+                                        <FormField control={form.control} name="tokenMetadata.description" render={({ field }) => (
+                                            <ContractFormItem className='mb-8' autoCols label='Description' description='Short description of your token.' control={ <Textarea placeholder="Short description for the JSON metadata file..." className='resize-none placeholder:font-light placeholder:italic' {...field} /> } />
+                                        )} />
+                                    </div>
+                                    <div>
+                                        <img src={tokenImage} onError={() => { setTokenImage(noImage); }} />
+                                    </div>
+                                </div>
+                            )}
                             <FormField control={form.control} name="mintable" render={({ field }) => (
-                                <ContractFormItem className='mb-8' label='Mintable' description='If checked, the token can be minted after the initial supply is minted.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } labelClassName='text-gradient-secondary' />
+                                <ContractFormItem className='mb-8' additionalCost={5} costApplies={watchMintable} label='Mintable' description='If checked, the token can be minted after the initial supply is minted.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } labelClassName='text-gradient-secondary' />
                             )} />
                             <FormField disabled control={form.control} name="burnable" render={({ field }) => (
-                                <ContractFormItem className='mb-8' label='Burnable' description='If checked, the token can be burned. (AVAILABLE SOON)' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled /> } labelClassName='text-gradient-primary' />
+                                <ContractFormItem disabled className='mb-8' label='Burnable' description='If checked, the token can be burned. (AVAILABLE SOON)' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled /> } labelClassName='text-gradient-primary' />
                             )} />
                             <FormField control={form.control} name="removeWatermark" render={({ field }) => (
-                                <ContractFormItem className='col-span-2 mb-8' label='Remove watermark' description='Check this to remove "TokenFactory" watermark from token name and contract code comments.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } />
+                                <ContractFormItem className='col-span-2 mb-8' additionalCost={5} costApplies={watchRemoveWatermark} label='Remove watermark' description='Check this to remove "TokenFactory" watermark from token name and contract code comments.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } />
                             )} />
                             {watchMintable && (
                                 <>
@@ -230,10 +268,10 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
                                         <ContractFormItem label={`${watchMintFixedAmount ? 'M' : 'Maximum m'}int amount`} description={`The ${watchMintFixedAmount ? '' : 'maximum'} amount of tokens to mint per function call.${watchMintFixedAmount ? '' : ' Set to 0 for unlimited amount.'}`} control={ <Input type="number" min={0} placeholder="0" {...field} /> } />
                                     )} />
                                     <FormField control={form.control} name="mintFixedAmount" render={({ field }) => (
-                                        <ContractFormItem label='Fixed amount' description='If checked, the amount of tokens minted will be the same every time.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } />
+                                        <ContractFormItem label='Fixed amount' autoCols additionalCost={3} costApplies={!watchMintFixedAmount} description='If checked, the amount of tokens minted will be the same every time.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } />
                                     )} />
                                     <FormField control={form.control} name="allowMintToAll" render={({ field }) => (
-                                        <ContractFormItem label='Anyone can mint' description='If not checked, only the contract owner can mint tokens.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } />
+                                        <ContractFormItem label='Anyone can mint' autoCols additionalCost={2} costApplies={!watchAllowMintToAll} description='If not checked, only the contract owner can mint tokens.' control={ <Checkbox checked={field.value} onCheckedChange={field.onChange} /> } />
                                     )} />
                                     <FormField control={form.control} name="initialAmount" render={({ field }) => (
                                         <ContractFormItem label='Initial amount' description='The initial amount of tokens to mint when the contract is deployed.' control={ <Input type="number" min={0} placeholder="0" {...field} /> } />
@@ -261,10 +299,11 @@ export function CreateContractForm({ limitedGfx }: CreateContractFormProps) {
                         modalOpen={modalOpen}
                         setModalOpen={setModalOpen}
                         form={form}
-                        contractContent={contractContent}
+                        contractResponse={contractResponse}
                         deployContract={deployContract}
                         deployed={deployStatus === DeployStatus.Success}
                         txId={txId}
+                        loading={responseLoading}
                     />
                 </CardContent>
             </Card>
