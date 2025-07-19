@@ -20,7 +20,7 @@ import { Pc } from '@stacks/transactions';
 import { AlertTriangleIcon, ExternalLinkIcon } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 import noImage from '../../assets/no-image.webp';
-import { ContractResponse } from '@/lib/api-types';
+import { ContractResponse, TokenMetadata } from '@/lib/api-types';
 
 interface CreateContractFormProps {
     limitedGfx?: boolean;

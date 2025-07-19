@@ -12,24 +12,7 @@ import { useEffect, useState } from 'react';
 import { getBtcBalance, getStxBalance } from '@/lib/api';
 
 async function authenticate() {
-  const res = await connect({
-    // network: 'testnet',
-    // appDetails: {
-    //   name: "Stacks Token Factory",
-    //   icon: window.location.origin + "/logo512.png",
-    // },
-    // redirectTo: "/",
-    // onFinish: async () => {
-    //   const userData = await getLocalStorage();
-
-    //   store.userData = userData;
-    //   store.loggedIn = true;
-
-    //   ls.set('userData', userData);
-
-    //   window.location.reload();
-    // },
-  });
+  const res = await connect();
 
   if (res?.addresses[0]?.address !== null) {
     const userData = getLocalStorage();

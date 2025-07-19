@@ -32,7 +32,7 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractRe
                 <Separator className='my-4' />
                 <div className='grid grid-cols-2 gap-x-4 gap-y-2'>
                     <div>
-                        <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-purple-500 via-pink-400 to-rose-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Token Details</h3>
+                        <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-orange-500 via-yellow-400 to-amber-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Token Details</h3>
                         <p><strong>Name:</strong> {contractResponse?.originalName ?? form.getValues('tokenName')}</p>
                         <p><strong>Symbol:</strong> {form.getValues('tokenSymbol').toUpperCase()}</p>
                         <p><strong>Supply:</strong> {form.getValues('tokenSupply')}</p>
@@ -40,7 +40,7 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractRe
                         <p><strong>Token URI:</strong> <a href={tokenUri} className="text-sky-500 hover:underline" target="_blank" rel="nofollow noopener"><MiddleEllipsis text={tokenUri} maxLength={64} /></a></p>
                         {contractResponse?.tokenMetadata && (
                             <>
-                                <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-purple-500 via-pink-400 to-rose-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Hosted Metadata File</h3>
+                                <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-orange-500 via-yellow-400 to-amber-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Hosted Metadata File</h3>
                                 <p><strong>Name:</strong> {contractResponse?.tokenMetadata?.name}</p>
                                 <p><strong>Description:</strong> {contractResponse?.tokenMetadata?.description}</p>
                                 <p><strong>Image:</strong> <img width="128" className="inline" src={contractResponse?.tokenMetadata?.image ?? noImage} /></p>
@@ -48,7 +48,7 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractRe
                         )}
                     </div>
                     <div>
-                        <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-purple-500 via-pink-400 to-rose-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Token Features</h3>
+                        <h3 className='text-lg font-bold bg-clip-text text-transparent bg-gradient-to-t bg-cover from-orange-500 via-yellow-400 to-amber-500' style={{ backgroundSize: "100% 50%", backgroundPositionY: "center" }}>Token Features</h3>
                         <p><strong>Hosting metadata file:</strong> {form.getValues('selfHostMetadata') ? 'No' : 'Yes'}</p>
                         <p><strong>Watermark:</strong> {form.getValues('removeWatermark') ? 'No' : 'Yes'}</p>
                         <p><strong>Mintable:</strong> {form.getValues('mintable') ? 'Yes' : 'No'}</p>
@@ -69,16 +69,21 @@ export function ContractPreviewModal({ modalOpen, setModalOpen, form, contractRe
                         )}
                     </div>
                     <div className="col-span-2">
-                        <Separator className='my-4' />
-                        <h3>Contract Clarity Code</h3>
-                        <ContractEditor contractBody={contractResponse?.body ?? (loading ? 'Loading contract code...' : 'No contract code was loaded.')} />
-                        {deployed && (
+                        {deployed ? (
                             <div className='text-green-400 text-lg text-center p-4'>
-                                <LucideCircleCheck size='1em' className="mr-4" /> Contract has been successfully deployed!
+                                <div className="flex items-center justify-center">
+                                    <LucideCircleCheck size='2em' className="mr-2" /> Contract has been successfully deployed!
+                                </div>
                                 <div className='mt-4 text-white text-base font-normal'>
                                     Transaction: <a href={`https://explorer.hiro.so/txid/${txId}`} target='_blank' rel='noopener noreferrer' className='text-orange-500 hover:underline'>{txId}</a>
                                 </div>
                             </div>
+                        ) : (
+                            <>
+                                <Separator className='my-4' />
+                                <h3>Contract Clarity Code</h3>
+                                <ContractEditor contractBody={contractResponse?.body ?? (loading ? 'Loading contract code...' : 'No contract code was loaded.')} />
+                            </>
                         )}
                     </div>
                 </div>
